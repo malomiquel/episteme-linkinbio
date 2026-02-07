@@ -119,6 +119,13 @@ export default function StoryPage() {
         <p className="text-cream/20 text-xs text-center">
           Image 1080×1920 — prête pour Instagram Stories
         </p>
+
+        <a
+          href="/admin"
+          className="text-sm text-cream/25 hover:text-cream/50 transition-colors text-center"
+        >
+          &larr; Retour
+        </a>
       </div>
 
             <div className="origin-top scale-[0.4] sm:scale-[0.5] lg:scale-[0.45]">
