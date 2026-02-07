@@ -2,12 +2,7 @@
 
 import { useState, useCallback, useRef } from "react";
 import { toPng } from "html-to-image";
-import {
-  questions,
-  results,
-  calculateResult,
-  type WineProfile,
-} from "../config/quiz";
+import { type QuizConfig, wineQuizConfig } from "../config/quiz";
 import { ResultCard } from "./result-card";
 
 type Stage = "intro" | "question" | "result";
@@ -16,18 +11,19 @@ function track(event: string, data?: Record<string, string>) {
   window.umami?.track(event, data);
 }
 
-export function Quiz() {
+interface QuizProps {
+  config?: QuizConfig;
+}
+
+export function Quiz({ config = wineQuizConfig }: QuizProps) {
+  const profiles = Object.keys(config.results);
+  const initialScores = Object.fromEntries(profiles.map((k) => [k, 0]));
+
   const [stage, setStage] = useState<Stage>("intro");
   const [currentQ, setCurrentQ] = useState(0);
-  const [scores, setScores] = useState<Record<WineProfile, number>>({
-    bordeaux: 0,
-    champagne: 0,
-    rhone: 0,
-    sancerre: 0,
-    chateauneuf: 0,
-  });
+  const [scores, setScores] = useState<Record<string, number>>(initialScores);
   const [fade, setFade] = useState(false);
-  const [resultProfile, setResultProfile] = useState<WineProfile>("bordeaux");
+  const [resultProfile, setResultProfile] = useState(profiles[0]);
   const [sharing, setSharing] = useState(false);
   const [copied, setCopied] = useState(false);
   const shareRef = useRef<HTMLDivElement>(null);
@@ -46,28 +42,35 @@ export function Quiz() {
   }
 
   function handleAnswer(
-    answerScores: Partial<Record<WineProfile, number>>,
+    answerScores: Record<string, number>,
     answerText: string,
   ) {
     track("quiz_answer", {
-      question: questions[currentQ].question,
+      question: config.questions[currentQ].question,
       answer: answerText,
       step: String(currentQ + 1),
     });
 
     const newScores = { ...scores };
     for (const [key, value] of Object.entries(answerScores)) {
-      newScores[key as WineProfile] += value ?? 0;
+      newScores[key] = (newScores[key] ?? 0) + (value ?? 0);
     }
     setScores(newScores);
 
-    if (currentQ < questions.length - 1) {
+    if (currentQ < config.questions.length - 1) {
       transition(() => setCurrentQ(currentQ + 1));
     } else {
-      const winner = calculateResult(newScores);
+      let max = 0;
+      let winner = profiles[0];
+      for (const [key, value] of Object.entries(newScores)) {
+        if (value > max) {
+          max = value;
+          winner = key;
+        }
+      }
       setResultProfile(winner);
       track("quiz_completed", {
-        result: results[winner].name,
+        result: config.results[winner].name,
         profile: winner,
       });
       transition(() => setStage("result"));
@@ -80,18 +83,12 @@ export function Quiz() {
     transition(() => {
       setStage("intro");
       setCurrentQ(0);
-      setScores({
-        bordeaux: 0,
-        champagne: 0,
-        rhone: 0,
-        sancerre: 0,
-        chateauneuf: 0,
-      });
+      setScores(Object.fromEntries(profiles.map((k) => [k, 0])));
     });
   }
 
   async function handleCopyLink() {
-    const url = `${window.location.origin}/quiz/result/${resultProfile}`;
+    const url = `${window.location.origin}${config.resultBasePath}/${resultProfile}`;
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
@@ -101,7 +98,6 @@ export function Quiz() {
       });
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Fallback
       const input = document.createElement("input");
       input.value = url;
       document.body.appendChild(input);
@@ -125,7 +121,7 @@ export function Quiz() {
 
       const res = await fetch(dataUrl);
       const blob = await res.blob();
-      const file = new File([blob], "quel-vin-es-tu.png", {
+      const file = new File([blob], `${config.shareFileName}.png`, {
         type: "image/png",
       });
 
@@ -137,9 +133,9 @@ export function Quiz() {
         });
         await navigator.share({
           files: [file],
-          title: `Je suis un ${result.name} !`,
-          text: `Je suis un ${result.name} (${result.title}) ! Fais le quiz : ${window.location.origin}/quiz`,
-          url: `${window.location.origin}/quiz/result/${resultProfile}`,
+          title: `Je suis ${result.name} !`,
+          text: `Je suis ${result.name} (${result.title}) ! Fais le quiz : ${window.location.origin}${config.resultBasePath}/../`,
+          url: `${window.location.origin}${config.resultBasePath}/${resultProfile}`,
         });
       } else {
         track("quiz_shared", {
@@ -148,7 +144,7 @@ export function Quiz() {
           profile: resultProfile,
         });
         const link = document.createElement("a");
-        link.download = "quel-vin-es-tu.png";
+        link.download = `${config.shareFileName}.png`;
         link.href = dataUrl;
         link.click();
       }
@@ -157,7 +153,7 @@ export function Quiz() {
         try {
           const dataUrl = await toPng(shareRef.current!, { pixelRatio: 3 });
           const link = document.createElement("a");
-          link.download = "quel-vin-es-tu.png";
+          link.download = `${config.shareFileName}.png`;
           link.href = dataUrl;
           link.click();
         } catch {
@@ -169,7 +165,7 @@ export function Quiz() {
     }
   }
 
-  const result = results[resultProfile];
+  const result = config.results[resultProfile];
 
   return (
     <div
@@ -178,13 +174,13 @@ export function Quiz() {
       {/* Intro */}
       {stage === "intro" && (
         <div className="text-center">
-          <div className="text-6xl mb-6">🍷</div>
+          <div className="text-6xl mb-6">{config.emoji}</div>
           <h1 className="font-(family-name:--font-playfair) text-3xl font-bold text-cream mb-3">
-            Quel vin es-tu ?
+            {config.title}
           </h1>
-          <p className="text-cream/50 text-sm mb-2">par Episteme</p>
+          <p className="text-cream/50 text-sm mb-2">{config.subtitle}</p>
           <p className="text-cream/40 text-sm mb-8 max-w-xs mx-auto">
-            6 questions pour découvrir quel vin correspond à ta personnalité.
+            {config.description}
           </p>
           <button
             onClick={handleStart}
@@ -203,21 +199,21 @@ export function Quiz() {
               <div
                 className="h-full bg-gold rounded-full transition-all duration-500"
                 style={{
-                  width: `${((currentQ + 1) / questions.length) * 100}%`,
+                  width: `${((currentQ + 1) / config.questions.length) * 100}%`,
                 }}
               />
             </div>
             <span className="text-xs text-cream/30 tabular-nums whitespace-nowrap">
-              {currentQ + 1}/{questions.length}
+              {currentQ + 1}/{config.questions.length}
             </span>
           </div>
 
           <h2 className="font-(family-name:--font-playfair) text-2xl font-bold text-cream text-center mb-8">
-            {questions[currentQ].question}
+            {config.questions[currentQ].question}
           </h2>
 
           <div className="flex flex-col gap-3">
-            {questions[currentQ].answers.map((answer, i) => (
+            {config.questions[currentQ].answers.map((answer, i) => (
               <button
                 key={i}
                 onClick={() => handleAnswer(answer.scores, answer.text)}
@@ -266,7 +262,7 @@ export function Quiz() {
                     marginBottom: 6,
                   }}
                 >
-                  Et toi, quel vin es-tu ?
+                  {config.shareCta}
                 </p>
                 <p
                   style={{
@@ -285,7 +281,6 @@ export function Quiz() {
           <ResultCard result={result} />
 
           <div className="flex flex-col gap-3 mt-6">
-            {/* Share image to story */}
             <button
               onClick={handleShare}
               disabled={sharing}
@@ -311,7 +306,6 @@ export function Quiz() {
               N&apos;oublie pas de nous taguer @asso_episteme !
             </p>
 
-            {/* Copy shareable link */}
             <button
               onClick={handleCopyLink}
               className="inline-flex items-center justify-center gap-2 bg-dark-card/80 border border-cream/8 text-cream/80 px-7 py-3 rounded-full font-semibold text-sm transition-all hover:border-gold/40 hover:-translate-y-0.5 cursor-pointer backdrop-blur-sm"
@@ -338,7 +332,6 @@ export function Quiz() {
               )}
             </button>
 
-            {/* Follow Instagram */}
             <a
               href="https://www.instagram.com/asso_episteme/"
               target="_blank"

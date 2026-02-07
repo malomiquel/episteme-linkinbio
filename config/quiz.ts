@@ -141,3 +141,32 @@ export function calculateResult(scores: Record<WineProfile, number>): WineProfil
   }
   return winner;
 }
+
+// ── Generic quiz config type (shared across all quizzes) ──
+
+export interface QuizConfig {
+  questions: { question: string; answers: { text: string; scores: Record<string, number> }[] }[];
+  results: Record<string, WineResult>;
+  title: string;
+  subtitle: string;
+  description: string;
+  emoji: string;
+  shareFileName: string;
+  shareCta: string;
+  resultBasePath: string;
+}
+
+export const wineQuizConfig: QuizConfig = {
+  questions: questions.map((q) => ({
+    question: q.question,
+    answers: q.answers.map((a) => ({ text: a.text, scores: a.scores as Record<string, number> })),
+  })),
+  results,
+  title: "Quel vin es-tu ?",
+  subtitle: "par Episteme",
+  description: "6 questions pour découvrir quel vin correspond à ta personnalité.",
+  emoji: "🍷",
+  shareFileName: "quel-vin-es-tu",
+  shareCta: "Et toi, quel vin es-tu ?",
+  resultBasePath: "/quiz/result",
+};
