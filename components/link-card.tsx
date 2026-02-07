@@ -32,7 +32,7 @@ export function LinkCard({
   return (
     <a
       href={href}
-      className="group flex items-center gap-3.5 bg-dark-card border border-cream/6 rounded-2xl p-4 text-cream no-underline transition-all duration-300 hover:border-gold hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.3)] animate-fade-in-up"
+      className="group flex items-center gap-3.5 bg-dark-card/80 border border-cream/8 rounded-2xl p-4 text-cream no-underline transition-all duration-300 hover:border-gold/40 hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.3)] animate-fade-in-up backdrop-blur-sm"
       style={{ animationDelay: `${delay}ms` }}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
     >
@@ -42,12 +42,12 @@ export function LinkCard({
         {icons[icon]}
       </div>
       <div className="min-w-0">
-        <h3 className="text-[15px] font-semibold font-(family-name:--font-inter)">
+        <h3 className="text-[15px] font-semibold font-(family-name:--font-inter) text-cream/90">
           {title}
         </h3>
-        <p className="text-xs text-cream/40">{description}</p>
+        <p className="text-xs text-cream/35">{description}</p>
       </div>
-      <span className="ml-auto text-cream/20 text-lg transition-all duration-300 group-hover:text-gold group-hover:translate-x-0.5">
+      <span className="ml-auto text-cream/15 text-lg transition-all duration-300 group-hover:text-gold group-hover:translate-x-0.5">
         ›
       </span>
     </a>

@@ -14,6 +14,8 @@ export const nextEvent = {
   location: "River's King, Paris",
   time: "19h30",
   ticketUrl: "https://www.helloasso.com/associations/episteme",
+  // Passe à true quand l'événement est officiellement annoncé et la billetterie ouverte
+  announced: false,
 };
 
 export const links = [
