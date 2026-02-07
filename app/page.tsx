@@ -1,25 +1,7 @@
-import { readFileSync } from "fs";
-import { join } from "path";
 import { Countdown } from "../components/countdown";
 import { LinkCard } from "../components/link-card";
+import { FeaturedQuiz } from "../components/featured-quiz";
 import { siteConfig, nextEvent, links, pastEvents } from "../config/site";
-import { quizzes, type QuizEntry } from "../config/quizzes";
-
-export const dynamic = "force-dynamic";
-
-function getFeaturedQuiz(): QuizEntry | null {
-  try {
-    const file = join(process.cwd(), "data", "featured.json");
-    const data = JSON.parse(readFileSync(file, "utf-8"));
-    if (!data.quizId) return null;
-    const now = new Date();
-    if (data.from && now < new Date(data.from)) return null;
-    if (data.until && now > new Date(data.until)) return null;
-    return quizzes[data.quizId] ?? null;
-  } catch {
-    return null;
-  }
-}
 
 export default function Home() {
   return (
@@ -48,37 +30,7 @@ export default function Home() {
           </p>
         </section>
 
-        {(() => {
-          const quiz = getFeaturedQuiz();
-          if (!quiz) return null;
-          return (
-            <a
-              href={quiz.path}
-              data-umami-event="link_click"
-              data-umami-event-title={`${quiz.label} - ${quiz.title}`}
-              className="w-full group flex items-center gap-4 rounded-2xl p-4 mb-6 border border-gold/25 bg-gradient-to-r from-wine-dark/60 to-wine/40 backdrop-blur-sm transition-all duration-300 hover:border-gold/50 hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(201,168,76,0.15)] animate-fade-in-up"
-              style={{ animationDelay: "200ms" }}
-            >
-              <div className="w-11 h-11 rounded-xl bg-gold/15 flex items-center justify-center text-xl shrink-0">
-                {quiz.emoji}
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-[15px] font-semibold text-cream/90">
-                    {quiz.title}
-                  </h3>
-                  <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-gold/20 text-gold">
-                    {quiz.label}
-                  </span>
-                </div>
-                <p className="text-xs text-cream/35">{quiz.description}</p>
-              </div>
-              <span className="ml-auto text-gold/40 text-lg transition-all duration-300 group-hover:text-gold group-hover:translate-x-0.5">
-                ›
-              </span>
-            </a>
-          );
-        })()}
+        <FeaturedQuiz />
 
         <section
           className="w-full bg-linear-to-br from-wine-dark/70 to-wine/50 border border-cream/8 rounded-2xl mb-6 text-center animate-fade-in-up backdrop-blur-sm overflow-hidden relative"
