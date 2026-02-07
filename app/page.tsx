@@ -16,8 +16,8 @@ export default function Home() {
           className="text-center mb-8 animate-fade-in-up"
           style={{ animationDelay: "100ms" }}
         >
-          <div className="w-28 h-28 rounded-full border-2 border-gold/60 mx-auto mb-4 flex items-center justify-center font-(family-name:--font-playfair) text-4xl font-bold text-gold bg-wine-dark/80 shadow-[0_0_40px_rgba(201,168,76,0.12)]">
-            E
+          <div className="w-28 h-28 rounded-full border-2 border-gold/60 mx-auto mb-4 overflow-hidden shadow-[0_0_40px_rgba(201,168,76,0.12)]">
+            <img src="/logo.svg" alt="Episteme" className="w-full h-full object-cover" />
           </div>
           <h1 className="font-(family-name:--font-playfair) text-3xl font-bold tracking-wide mb-1 text-cream">
             {siteConfig.name}
