@@ -9,7 +9,7 @@ export const siteConfig = {
 };
 
 export const nextEvent = {
-  name: "Transmission",
+  name: "Transmission II",
   date: "2026-03-14T19:30:00",
   location: "River's King, Paris",
   time: "19h30",
@@ -54,4 +54,5 @@ export const pastEvents = [
   { name: "Soirée RCPA", date: "22 novembre 2025", emoji: "🏉" },
   { name: "Shamrock Tours", date: "12 septembre 2025", emoji: "🍀" },
   { name: "Fête de la Musique", date: "21 juin 2025", emoji: "🎵" },
+  { name: "Transmission I", date: "1 février 2025", emoji: "🎵" },
 ];

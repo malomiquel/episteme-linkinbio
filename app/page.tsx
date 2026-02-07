@@ -7,7 +7,7 @@ export default function Home() {
     <>
       {/* Background gradient */}
       <div className="fixed inset-0 bg-dark z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(140,58,68,0.25)_0%,transparent_50%),radial-gradient(ellipse_at_80%_100%,rgba(201,168,76,0.1)_0%,transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(201,168,76,0.12)_0%,transparent_50%),radial-gradient(ellipse_at_80%_100%,rgba(140,58,68,0.2)_0%,transparent_50%)]" />
       </div>
 
       <div className="relative z-10 max-w-120 mx-auto px-5 pt-10 pb-16 flex flex-col items-center font-(family-name:--font-inter)">
@@ -68,7 +68,10 @@ export default function Home() {
           ) : (
             <div className="relative">
               {/* Contenu flouté */}
-              <div className="p-6 blur-md opacity-30 select-none pointer-events-none" aria-hidden="true">
+              <div
+                className="p-6 blur-md opacity-30 select-none pointer-events-none"
+                aria-hidden="true"
+              >
                 <p className="text-[11px] uppercase tracking-[3px] text-gold/80 font-semibold mb-1.5">
                   Prochain événement
                 </p>
@@ -81,8 +84,12 @@ export default function Home() {
                 <div className="flex justify-center gap-4 sm:gap-6 mb-5">
                   {["Jours", "Heures", "Min", "Sec"].map((label) => (
                     <div key={label} className="flex flex-col items-center">
-                      <span className="text-3xl sm:text-4xl font-semibold text-gold-light">??</span>
-                      <span className="text-[10px] uppercase tracking-[2px] text-cream/40 mt-1">{label}</span>
+                      <span className="text-3xl sm:text-4xl font-semibold text-gold-light">
+                        ??
+                      </span>
+                      <span className="text-[10px] uppercase tracking-[2px] text-cream/40 mt-1">
+                        {label}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -128,7 +135,9 @@ export default function Home() {
               className="aspect-square rounded-xl bg-dark-card border border-cream/6 flex flex-col items-center justify-center text-center p-4 transition-colors hover:border-cream/12"
             >
               <span className="text-3xl mb-2">{event.emoji}</span>
-              <span className="text-[13px] font-semibold text-cream/80">{event.name}</span>
+              <span className="text-[13px] font-semibold text-cream/80">
+                {event.name}
+              </span>
               <span className="text-[11px] text-gold/60">{event.date}</span>
             </div>
           ))}
@@ -136,7 +145,7 @@ export default function Home() {
 
         {/* Footer */}
         <footer
-          className="text-center text-xs text-cream/20 mt-8 animate-fade-in-up"
+          className="text-center text-xs text-white mt-8 animate-fade-in-up"
           style={{ animationDelay: "800ms" }}
         >
           <div className="flex justify-center gap-5 mb-3">
@@ -145,7 +154,7 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="text-cream/25 transition-colors hover:text-gold"
+              className="text-white transition-colors hover:text-gold"
             >
               <svg
                 width="22"
