@@ -1,5 +1,6 @@
 import { wineQuizConfig } from "./quiz";
 import { accordQuizConfig } from "./quiz-accords";
+import { eventQuizConfig } from "./quiz-events";
 import type { QuizConfig } from "./quiz";
 
 export interface QuizEntry {
@@ -26,10 +27,19 @@ export const quizzes: Record<string, QuizEntry> = {
     id: "accords",
     config: accordQuizConfig,
     path: "/quiz/accords",
-    label: "Nouveau quiz",
+    label: "Quiz",
     emoji: "🍽️",
     title: "Quel accord mets-vin es-tu ?",
     description: "Découvre quel accord mets-vin te correspond",
+  },
+  events: {
+    id: "events",
+    config: eventQuizConfig,
+    path: "/quiz/events",
+    label: "Nouveau quiz",
+    emoji: "🎭",
+    title: "Quel événement Episteme es-tu ?",
+    description: "Découvre quel événement te correspond",
   },
 };
 
