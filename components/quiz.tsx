@@ -8,6 +8,7 @@ import {
   calculateResult,
   type WineProfile,
 } from "../config/quiz";
+import { ResultCard } from "./result-card";
 
 type Stage = "intro" | "question" | "result";
 
@@ -28,6 +29,7 @@ export function Quiz() {
   const [fade, setFade] = useState(false);
   const [resultProfile, setResultProfile] = useState<WineProfile>("bordeaux");
   const [sharing, setSharing] = useState(false);
+  const [copied, setCopied] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
   const transition = useCallback((fn: () => void) => {
@@ -47,6 +49,7 @@ export function Quiz() {
     track("quiz_answer", {
       question: questions[currentQ].question,
       answer: answerText,
+      step: String(currentQ + 1),
     });
 
     const newScores = { ...scores };
@@ -60,13 +63,14 @@ export function Quiz() {
     } else {
       const winner = calculateResult(newScores);
       setResultProfile(winner);
-      track("quiz_completed", { result: results[winner].name });
+      track("quiz_completed", { result: results[winner].name, profile: winner });
       transition(() => setStage("result"));
     }
   }
 
   function handleRestart() {
-    track("quiz_restarted");
+    track("quiz_restarted", { previous_result: resultProfile });
+    setCopied(false);
     transition(() => {
       setStage("intro");
       setCurrentQ(0);
@@ -78,6 +82,26 @@ export function Quiz() {
         chateauneuf: 0,
       });
     });
+  }
+
+  async function handleCopyLink() {
+    const url = `${window.location.origin}/quiz/result/${resultProfile}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      track("quiz_link_copied", { result: result.name, profile: resultProfile });
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Fallback
+      const input = document.createElement("input");
+      input.value = url;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      document.body.removeChild(input);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   }
 
   async function handleShare() {
@@ -95,14 +119,15 @@ export function Quiz() {
       const file = new File([blob], "quel-vin-es-tu.png", { type: "image/png" });
 
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
-        track("quiz_shared", { method: "native", result: result.name });
+        track("quiz_shared", { method: "native", result: result.name, profile: resultProfile });
         await navigator.share({
           files: [file],
-          title: "Quel vin es-tu ?",
-          text: "Découvre quel vin tu es ! 🍷 @asso_episteme",
+          title: `Je suis un ${result.name} !`,
+          text: `Je suis un ${result.name} (${result.title}) ! Fais le quiz : ${window.location.origin}/quiz`,
+          url: `${window.location.origin}/quiz/result/${resultProfile}`,
         });
       } else {
-        track("quiz_shared", { method: "download", result: result.name });
+        track("quiz_shared", { method: "download", result: result.name, profile: resultProfile });
         const link = document.createElement("a");
         link.download = "quel-vin-es-tu.png";
         link.href = dataUrl;
@@ -189,53 +214,12 @@ export function Quiz() {
       {/* Result */}
       {stage === "result" && (
         <div className="text-center">
-          <div
-            ref={cardRef}
-            className="rounded-3xl p-8 mb-6 border border-cream/10"
-            style={{ background: result.color }}
-          >
-            <p
-              className="text-xs uppercase tracking-[3px] mb-4"
-              style={{ color: result.accent }}
-            >
-              Tu es un
-            </p>
-            <div className="text-5xl mb-4">{result.emoji}</div>
-            <h2 className="font-(family-name:--font-playfair) text-3xl font-bold mb-1 text-cream">
-              {result.name}
-            </h2>
-            <p
-              className="font-(family-name:--font-playfair) italic text-lg mb-5"
-              style={{ color: result.accent }}
-            >
-              {result.title}
-            </p>
-            <p className="text-sm text-cream/60 leading-relaxed mb-6 max-w-xs mx-auto">
-              {result.description}
-            </p>
-            <div className="flex justify-center gap-2 flex-wrap">
-              {result.traits.map((trait) => (
-                <span
-                  key={trait}
-                  className="text-xs px-3 py-1.5 rounded-full border"
-                  style={{
-                    borderColor: result.accent + "40",
-                    color: result.accent,
-                  }}
-                >
-                  {trait}
-                </span>
-              ))}
-            </div>
-
-            <div className="mt-6 pt-5 border-t border-cream/8">
-              <p className="text-[11px] text-cream/25 tracking-wide">
-                @asso_episteme
-              </p>
-            </div>
+          <div ref={cardRef}>
+            <ResultCard result={result} />
           </div>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 mt-6">
+            {/* Share image to story */}
             <button
               onClick={handleShare}
               disabled={sharing}
@@ -253,11 +237,30 @@ export function Quiz() {
               )}
             </button>
 
+            {/* Copy shareable link */}
+            <button
+              onClick={handleCopyLink}
+              className="inline-flex items-center justify-center gap-2 bg-dark-card/80 border border-cream/8 text-cream/80 px-7 py-3 rounded-full font-semibold text-sm transition-all hover:border-gold/40 hover:-translate-y-0.5 cursor-pointer backdrop-blur-sm"
+            >
+              {copied ? (
+                "Lien copié !"
+              ) : (
+                <>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                  </svg>
+                  Copier le lien de mon résultat
+                </>
+              )}
+            </button>
+
+            {/* Follow Instagram */}
             <a
               href="https://www.instagram.com/asso_episteme/"
               target="_blank"
               rel="noopener noreferrer"
-              onClick={() => track("quiz_follow_instagram", { result: result.name })}
+              onClick={() => track("quiz_follow_instagram", { result: result.name, profile: resultProfile })}
               className="inline-flex items-center justify-center gap-2 bg-gold text-dark px-7 py-3 rounded-full font-semibold text-sm transition-all hover:bg-gold-light hover:-translate-y-0.5 cursor-pointer"
             >
               Suivre Episteme sur Instagram

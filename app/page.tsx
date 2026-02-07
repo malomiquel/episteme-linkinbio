@@ -60,6 +60,8 @@ export default function Home() {
                 href={nextEvent.ticketUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-umami-event="ticket_click"
+                data-umami-event-event={nextEvent.name}
                 className="inline-flex items-center gap-2 bg-gold text-dark px-7 py-3 rounded-full font-semibold text-sm transition-all hover:bg-gold-light hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(201,168,76,0.25)]"
               >
                 Réserver ma place
