@@ -17,7 +17,7 @@ export const quizzes: Record<string, QuizEntry> = {
     id: "vin",
     config: wineQuizConfig,
     path: "/quiz/vin",
-    label: "Quiz",
+    label: "Nouveau quiz",
     emoji: "🍷",
     title: "Quel vin es-tu ?",
     description: "Découvre quel vin correspond à ta personnalité",
