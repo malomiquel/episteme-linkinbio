@@ -30,7 +30,7 @@ export function Quiz() {
   const [resultProfile, setResultProfile] = useState<WineProfile>("bordeaux");
   const [sharing, setSharing] = useState(false);
   const [copied, setCopied] = useState(false);
-  const cardRef = useRef<HTMLDivElement>(null);
+  const shareRef = useRef<HTMLDivElement>(null);
 
   const transition = useCallback((fn: () => void) => {
     setFade(true);
@@ -105,11 +105,11 @@ export function Quiz() {
   }
 
   async function handleShare() {
-    if (!cardRef.current || sharing) return;
+    if (!shareRef.current || sharing) return;
     setSharing(true);
 
     try {
-      const dataUrl = await toPng(cardRef.current, {
+      const dataUrl = await toPng(shareRef.current, {
         pixelRatio: 3,
         cacheBust: true,
       });
@@ -136,7 +136,7 @@ export function Quiz() {
     } catch (err) {
       if ((err as Error)?.name !== "AbortError") {
         try {
-          const dataUrl = await toPng(cardRef.current, { pixelRatio: 3 });
+          const dataUrl = await toPng(shareRef.current!, { pixelRatio: 3 });
           const link = document.createElement("a");
           link.download = "quel-vin-es-tu.png";
           link.href = dataUrl;
@@ -214,9 +214,55 @@ export function Quiz() {
       {/* Result */}
       {stage === "result" && (
         <div className="text-center">
-          <div ref={cardRef}>
-            <ResultCard result={result} />
+          {/* Hidden story-format share image (9:16) */}
+          <div style={{ position: "fixed", left: -9999, top: -9999 }}>
+            <div
+              ref={shareRef}
+              style={{
+                width: 360,
+                height: 640,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "40px 28px",
+                background: `
+                  radial-gradient(circle at 50% 35%, ${result.accent}18 0%, transparent 50%),
+                  radial-gradient(circle at 50% 50%, transparent 40%, rgba(0,0,0,0.3) 100%),
+                  ${result.color}
+                `,
+              }}
+            >
+              <div style={{ transform: "scale(0.82)", transformOrigin: "center" }}>
+                <ResultCard result={result} />
+              </div>
+              <div style={{ marginTop: 28, textAlign: "center" }}>
+                <p
+                  style={{
+                    color: result.accent,
+                    fontSize: 16,
+                    fontWeight: 600,
+                    fontFamily: "var(--font-playfair)",
+                    marginBottom: 6,
+                  }}
+                >
+                  Et toi, quel vin es-tu ?
+                </p>
+                <p
+                  style={{
+                    color: "rgba(245,240,232,0.25)",
+                    fontSize: 11,
+                    letterSpacing: "1.5px",
+                  }}
+                >
+                  @asso_episteme
+                </p>
+              </div>
+            </div>
           </div>
+
+          {/* Visible card */}
+          <ResultCard result={result} />
 
           <div className="flex flex-col gap-3 mt-6">
             {/* Share image to story */}
