@@ -1,3 +1,5 @@
+"use client";
+
 const iconStyles: Record<string, string> = {
   ticket: "bg-wine",
   instagram: "bg-gradient-to-br from-[#833AB4] via-[#E1306C] to-[#F77737]",
@@ -21,6 +23,12 @@ interface LinkCardProps {
   delay: number;
 }
 
+declare global {
+  interface Window {
+    umami?: { track: (event: string, data?: Record<string, string>) => void };
+  }
+}
+
 export function LinkCard({
   title,
   description,
@@ -29,9 +37,14 @@ export function LinkCard({
   external,
   delay,
 }: LinkCardProps) {
+  function handleClick() {
+    window.umami?.track("link_click", { title, href });
+  }
+
   return (
     <a
       href={href}
+      onClick={handleClick}
       className="group flex items-center gap-3.5 bg-dark-card/80 border border-cream/8 rounded-2xl p-4 text-cream no-underline transition-all duration-300 hover:border-gold/40 hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.3)] animate-fade-in-up backdrop-blur-sm"
       style={{ animationDelay: `${delay}ms` }}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}

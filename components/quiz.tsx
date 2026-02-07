@@ -11,6 +11,10 @@ import {
 
 type Stage = "intro" | "question" | "result";
 
+function track(event: string, data?: Record<string, string>) {
+  window.umami?.track(event, data);
+}
+
 export function Quiz() {
   const [stage, setStage] = useState<Stage>("intro");
   const [currentQ, setCurrentQ] = useState(0);
@@ -35,10 +39,16 @@ export function Quiz() {
   }, []);
 
   function handleStart() {
+    track("quiz_started");
     transition(() => setStage("question"));
   }
 
-  function handleAnswer(answerScores: Partial<Record<WineProfile, number>>) {
+  function handleAnswer(answerScores: Partial<Record<WineProfile, number>>, answerText: string) {
+    track("quiz_answer", {
+      question: questions[currentQ].question,
+      answer: answerText,
+    });
+
     const newScores = { ...scores };
     for (const [key, value] of Object.entries(answerScores)) {
       newScores[key as WineProfile] += value ?? 0;
@@ -50,11 +60,13 @@ export function Quiz() {
     } else {
       const winner = calculateResult(newScores);
       setResultProfile(winner);
+      track("quiz_completed", { result: results[winner].name });
       transition(() => setStage("result"));
     }
   }
 
   function handleRestart() {
+    track("quiz_restarted");
     transition(() => {
       setStage("intro");
       setCurrentQ(0);
@@ -73,35 +85,31 @@ export function Quiz() {
     setSharing(true);
 
     try {
-      // Generate image from the result card
       const dataUrl = await toPng(cardRef.current, {
         pixelRatio: 3,
         cacheBust: true,
       });
 
-      // Convert to blob
       const res = await fetch(dataUrl);
       const blob = await res.blob();
       const file = new File([blob], "quel-vin-es-tu.png", { type: "image/png" });
 
-      // Try native share (mobile → opens share sheet with Instagram Stories option)
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
+        track("quiz_shared", { method: "native", result: result.name });
         await navigator.share({
           files: [file],
           title: "Quel vin es-tu ?",
           text: "Découvre quel vin tu es ! 🍷 @asso_episteme",
         });
       } else {
-        // Fallback: download the image
+        track("quiz_shared", { method: "download", result: result.name });
         const link = document.createElement("a");
         link.download = "quel-vin-es-tu.png";
         link.href = dataUrl;
         link.click();
       }
     } catch (err) {
-      // User cancelled share or error
       if ((err as Error)?.name !== "AbortError") {
-        // Fallback download on any error
         try {
           const dataUrl = await toPng(cardRef.current, { pixelRatio: 3 });
           const link = document.createElement("a");
@@ -146,7 +154,6 @@ export function Quiz() {
       {/* Questions */}
       {stage === "question" && (
         <div>
-          {/* Progress bar */}
           <div className="flex items-center gap-3 mb-8">
             <div className="flex-1 h-1 bg-cream/10 rounded-full overflow-hidden">
               <div
@@ -169,7 +176,7 @@ export function Quiz() {
             {questions[currentQ].answers.map((answer, i) => (
               <button
                 key={i}
-                onClick={() => handleAnswer(answer.scores)}
+                onClick={() => handleAnswer(answer.scores, answer.text)}
                 className="w-full text-left bg-dark-card/80 border border-cream/8 rounded-2xl p-4 text-cream/90 text-[15px] transition-all duration-200 hover:border-gold/40 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(0,0,0,0.3)] cursor-pointer backdrop-blur-sm active:scale-[0.98]"
               >
                 {answer.text}
@@ -182,7 +189,6 @@ export function Quiz() {
       {/* Result */}
       {stage === "result" && (
         <div className="text-center">
-          {/* Result card - screenshot-friendly */}
           <div
             ref={cardRef}
             className="rounded-3xl p-8 mb-6 border border-cream/10"
@@ -222,7 +228,6 @@ export function Quiz() {
               ))}
             </div>
 
-            {/* Branding */}
             <div className="mt-6 pt-5 border-t border-cream/8">
               <p className="text-[11px] text-cream/25 tracking-wide">
                 @asso_episteme
@@ -230,7 +235,6 @@ export function Quiz() {
             </div>
           </div>
 
-          {/* Actions */}
           <div className="flex flex-col gap-3">
             <button
               onClick={handleShare}
@@ -253,6 +257,7 @@ export function Quiz() {
               href="https://www.instagram.com/asso_episteme/"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => track("quiz_follow_instagram", { result: result.name })}
               className="inline-flex items-center justify-center gap-2 bg-gold text-dark px-7 py-3 rounded-full font-semibold text-sm transition-all hover:bg-gold-light hover:-translate-y-0.5 cursor-pointer"
             >
               Suivre Episteme sur Instagram
