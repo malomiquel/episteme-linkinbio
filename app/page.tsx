@@ -1,18 +1,34 @@
+import { readFileSync } from "fs";
+import { join } from "path";
 import { Countdown } from "../components/countdown";
 import { LinkCard } from "../components/link-card";
 import { siteConfig, nextEvent, links, pastEvents } from "../config/site";
-import { getFeaturedQuiz } from "../config/quizzes";
+import { quizzes, type QuizEntry } from "../config/quizzes";
+
+export const dynamic = "force-dynamic";
+
+function getFeaturedQuiz(): QuizEntry | null {
+  try {
+    const file = join(process.cwd(), "data", "featured.json");
+    const data = JSON.parse(readFileSync(file, "utf-8"));
+    if (!data.quizId) return null;
+    const now = new Date();
+    if (data.from && now < new Date(data.from)) return null;
+    if (data.until && now > new Date(data.until)) return null;
+    return quizzes[data.quizId] ?? null;
+  } catch {
+    return null;
+  }
+}
 
 export default function Home() {
   return (
     <>
-      {/* Background gradient */}
       <div className="fixed inset-0 bg-dark z-0">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(201,168,76,0.12)_0%,transparent_50%),radial-gradient(ellipse_at_80%_100%,rgba(140,58,68,0.2)_0%,transparent_50%)]" />
       </div>
 
       <div className="relative z-10 max-w-120 mx-auto px-5 pt-10 pb-16 flex flex-col items-center font-(family-name:--font-inter)">
-        {/* Profile */}
         <section
           className="text-center mb-8 animate-fade-in-up"
           style={{ animationDelay: "100ms" }}
@@ -32,7 +48,6 @@ export default function Home() {
           </p>
         </section>
 
-        {/* Featured quiz (dynamique — config/quizzes.ts) */}
         {(() => {
           const quiz = getFeaturedQuiz();
           if (!quiz) return null;
@@ -65,7 +80,6 @@ export default function Home() {
           );
         })()}
 
-        {/* Countdown */}
         <section
           className="w-full bg-linear-to-br from-wine-dark/70 to-wine/50 border border-cream/8 rounded-2xl mb-6 text-center animate-fade-in-up backdrop-blur-sm overflow-hidden relative"
           style={{ animationDelay: "200ms" }}
@@ -103,7 +117,6 @@ export default function Home() {
             </div>
           ) : (
             <div className="relative">
-              {/* Contenu flouté */}
               <div
                 className="p-6 blur-md opacity-30 select-none pointer-events-none"
                 aria-hidden="true"
@@ -133,7 +146,6 @@ export default function Home() {
                   Réserver ma place
                 </span>
               </div>
-              {/* Texte par-dessus */}
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <p className="font-(family-name:--font-playfair) text-xl font-bold text-cream mb-2">
                   Quelque chose se prépare...
@@ -146,14 +158,12 @@ export default function Home() {
           )}
         </section>
 
-        {/* Links */}
         <div className="w-full flex flex-col gap-3 mb-8">
           {links.map((link, i) => (
             <LinkCard key={link.title} {...link} delay={300 + i * 80} />
           ))}
         </div>
 
-        {/* Past events */}
         <h3
           className="font-(family-name:--font-playfair) text-lg text-center text-gold/70 mb-4 animate-fade-in-up"
           id="events"
@@ -179,7 +189,6 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Footer */}
         <footer
           className="text-center text-xs text-white mt-8 animate-fade-in-up"
           style={{ animationDelay: "800ms" }}

@@ -156,9 +156,7 @@ export function Quiz({ config = wineQuizConfig }: QuizProps) {
           link.download = `${config.shareFileName}.png`;
           link.href = dataUrl;
           link.click();
-        } catch {
-          // silent fail
-        }
+        } catch {}
       }
     } finally {
       setSharing(false);
@@ -171,8 +169,7 @@ export function Quiz({ config = wineQuizConfig }: QuizProps) {
     <div
       className={`w-full max-w-md mx-auto transition-opacity duration-300 ${fade ? "opacity-0" : "opacity-100"}`}
     >
-      {/* Intro */}
-      {stage === "intro" && (
+            {stage === "intro" && (
         <div className="text-center">
           <div className="text-6xl mb-6">{config.emoji}</div>
           <h1 className="font-(family-name:--font-playfair) text-3xl font-bold text-cream mb-3">
@@ -191,8 +188,7 @@ export function Quiz({ config = wineQuizConfig }: QuizProps) {
         </div>
       )}
 
-      {/* Questions */}
-      {stage === "question" && (
+            {stage === "question" && (
         <div>
           <div className="flex items-center gap-3 mb-8">
             <div className="flex-1 h-1 bg-cream/10 rounded-full overflow-hidden">
@@ -226,8 +222,7 @@ export function Quiz({ config = wineQuizConfig }: QuizProps) {
         </div>
       )}
 
-      {/* Result */}
-      {stage === "result" && (
+            {stage === "result" && (
         <div className="text-center">
           <div style={{ position: "fixed", left: -9999, top: -9999 }}>
             <div
@@ -277,8 +272,7 @@ export function Quiz({ config = wineQuizConfig }: QuizProps) {
             </div>
           </div>
 
-          {/* Visible card */}
-          <ResultCard result={result} />
+                    <ResultCard result={result} />
 
           <div className="flex flex-col gap-3 mt-6">
             <button

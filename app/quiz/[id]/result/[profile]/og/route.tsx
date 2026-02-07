@@ -1,21 +1,19 @@
 import { ImageResponse } from "next/og";
-import { accordResults, type AccordProfile } from "../../../../../../config/quiz-accords";
+import { quizzes } from "../../../../../../config/quizzes";
 
 export const runtime = "edge";
 
-const validProfiles = Object.keys(accordResults) as AccordProfile[];
-
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ profile: string }> }
+  { params }: { params: Promise<{ id: string; profile: string }> }
 ) {
-  const { profile } = await params;
+  const { id, profile } = await params;
+  const quiz = quizzes[id];
 
-  if (!validProfiles.includes(profile as AccordProfile)) {
-    return new Response("Not found", { status: 404 });
-  }
+  if (!quiz) return new Response("Not found", { status: 404 });
 
-  const result = accordResults[profile as AccordProfile];
+  const result = quiz.config.results[profile];
+  if (!result) return new Response("Not found", { status: 404 });
 
   return new ImageResponse(
     (
@@ -61,7 +59,7 @@ export async function GET(
               marginBottom: "16px",
             }}
           >
-            Quel accord mets-vin es-tu ?
+            {quiz.config.title}
           </p>
 
           <p style={{ fontSize: "64px", marginBottom: "8px" }}>

@@ -142,8 +142,6 @@ export function calculateResult(scores: Record<WineProfile, number>): WineProfil
   return winner;
 }
 
-// ── Generic quiz config type (shared across all quizzes) ──
-
 export interface QuizConfig {
   questions: { question: string; answers: { text: string; scores: Record<string, number> }[] }[];
   results: Record<string, WineResult>;
@@ -168,5 +166,5 @@ export const wineQuizConfig: QuizConfig = {
   emoji: "🍷",
   shareFileName: "quel-vin-es-tu",
   shareCta: "Et toi, quel vin es-tu ?",
-  resultBasePath: "/quiz/result",
+  resultBasePath: "/quiz/vin/result",
 };

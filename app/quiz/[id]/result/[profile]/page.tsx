@@ -1,47 +1,50 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { accordResults, type AccordProfile } from "../../../../../config/quiz-accords";
+import { quizzes } from "../../../../../config/quizzes";
 import { ResultCard } from "../../../../../components/result-card";
 
-const validProfiles = Object.keys(accordResults) as AccordProfile[];
-
-type Params = Promise<{ profile: string }>;
+type Params = Promise<{ id: string; profile: string }>;
 
 export async function generateStaticParams() {
-  return validProfiles.map((profile) => ({ profile }));
+  return Object.entries(quizzes).flatMap(([id, quiz]) =>
+    Object.keys(quiz.config.results).map((profile) => ({ id, profile }))
+  );
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const { profile } = await params;
-  if (!validProfiles.includes(profile as AccordProfile)) return {};
-  const result = accordResults[profile as AccordProfile];
+  const { id, profile } = await params;
+  const quiz = quizzes[id];
+  if (!quiz) return {};
+
+  const result = quiz.config.results[profile];
+  if (!result) return {};
 
   return {
-    title: `Je suis ${result.name} ! | Quel accord mets-vin es-tu ?`,
+    title: `Je suis ${result.name} ! | ${quiz.config.title}`,
     description: result.description,
     openGraph: {
       title: `${result.emoji} Je suis ${result.name} - ${result.title}`,
-      description: `${result.description} Fais le quiz pour découvrir quel accord mets-vin tu es !`,
+      description: `${result.description} Fais le quiz pour d\u00e9couvrir ton r\u00e9sultat !`,
       type: "website",
-      images: [`/quiz/accords/result/${profile}/og`],
+      images: [`/quiz/${id}/result/${profile}/og`],
     },
     twitter: {
       card: "summary_large_image",
       title: `${result.emoji} Je suis ${result.name} !`,
-      description: `${result.title} - Fais le quiz pour découvrir quel accord mets-vin tu es !`,
-      images: [`/quiz/accords/result/${profile}/og`],
+      description: `${result.title} - Fais le quiz !`,
+      images: [`/quiz/${id}/result/${profile}/og`],
     },
   };
 }
 
-export default async function AccordResultPage({ params }: { params: Params }) {
-  const { profile } = await params;
+export default async function ResultPage({ params }: { params: Params }) {
+  const { id, profile } = await params;
+  const quiz = quizzes[id];
 
-  if (!validProfiles.includes(profile as AccordProfile)) {
-    notFound();
-  }
+  if (!quiz) notFound();
 
-  const result = accordResults[profile as AccordProfile];
+  const result = quiz.config.results[profile];
+  if (!result) notFound();
 
   return (
     <>
@@ -54,9 +57,9 @@ export default async function AccordResultPage({ params }: { params: Params }) {
 
           <div className="flex flex-col gap-3 mt-6">
             <a
-              href="/quiz/accords"
+              href={`/quiz/${id}`}
               data-umami-event="result_page_take_quiz"
-              data-umami-event-quiz="accords"
+              data-umami-event-quiz={id}
               data-umami-event-from={profile}
               className="inline-flex items-center justify-center gap-2 bg-gold text-dark px-7 py-3 rounded-full font-semibold text-sm transition-all hover:bg-gold-light hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(201,168,76,0.25)]"
             >

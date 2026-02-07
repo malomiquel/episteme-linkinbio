@@ -34,9 +34,7 @@ export default function StoryPage() {
           link.download = "episteme-story.png";
           link.href = dataUrl;
           link.click();
-        } catch {
-          // silent fail
-        }
+        } catch {}
       }
     } finally {
       setGenerating(false);
@@ -45,8 +43,7 @@ export default function StoryPage() {
 
   return (
     <div className="min-h-screen bg-dark flex flex-col lg:flex-row items-center lg:items-start justify-center gap-8 p-6 lg:p-12">
-      {/* Controls */}
-      <div className="w-full max-w-sm flex flex-col gap-5 lg:sticky lg:top-12">
+            <div className="w-full max-w-sm flex flex-col gap-5 lg:sticky lg:top-12">
         <h1 className="font-(family-name:--font-playfair) text-2xl font-bold text-cream">
           Générateur de story
         </h1>
@@ -124,8 +121,7 @@ export default function StoryPage() {
         </p>
       </div>
 
-      {/* Preview */}
-      <div className="origin-top scale-[0.4] sm:scale-[0.5] lg:scale-[0.45]">
+            <div className="origin-top scale-[0.4] sm:scale-[0.5] lg:scale-[0.45]">
         <StoryContent
           ref={storyRef}
           title={title}
@@ -157,8 +153,7 @@ const StoryContent = forwardRef<HTMLDivElement, StoryContentProps>(
           background: "#1E0A12",
         }}
       >
-        {/* Background layers */}
-        <div
+                <div
           className="absolute inset-0"
           style={{
             background: `
@@ -168,8 +163,7 @@ const StoryContent = forwardRef<HTMLDivElement, StoryContentProps>(
             `,
           }}
         />
-        {/* Vignette */}
-        <div
+                <div
           className="absolute inset-0"
           style={{
             background:
@@ -177,10 +171,8 @@ const StoryContent = forwardRef<HTMLDivElement, StoryContentProps>(
           }}
         />
 
-        {/* Content */}
-        <div className="relative z-10 flex flex-col items-center text-center px-16">
-          {/* Logo */}
-          <div className="w-[144px] h-[144px] rounded-full border-[2.5px] border-[#C9A84C]/60 overflow-hidden shadow-[0_0_50px_rgba(201,168,76,0.1)]">
+                <div className="relative z-10 flex flex-col items-center text-center px-16">
+                    <div className="w-[144px] h-[144px] rounded-full border-[2.5px] border-[#C9A84C]/60 overflow-hidden shadow-[0_0_50px_rgba(201,168,76,0.1)]">
             <img
               src="/logo.svg"
               alt="Episteme"
@@ -188,33 +180,27 @@ const StoryContent = forwardRef<HTMLDivElement, StoryContentProps>(
             />
           </div>
 
-          {/* Handle */}
-          <p className="font-(family-name:--font-inter) text-[24px] text-[#C9A84C]/60 mt-10 tracking-wide">
+                    <p className="font-(family-name:--font-inter) text-[24px] text-[#C9A84C]/60 mt-10 tracking-wide">
             @asso_episteme
           </p>
 
-          {/* Badge */}
-          <div className="mt-16 mb-6">
+                    <div className="mt-16 mb-6">
             <span className="font-(family-name:--font-inter) text-[20px] uppercase tracking-[5px] font-semibold px-8 py-3 rounded-full border-[1.5px] border-[#C9A84C]/30 text-[#C9A84C]/80">
               {label}
             </span>
           </div>
 
-          {/* Emoji */}
-          <div className="text-[96px] mt-8 leading-none">{emoji}</div>
+                    <div className="text-[96px] mt-8 leading-none">{emoji}</div>
 
-          {/* Title */}
-          <h1 className="font-(family-name:--font-playfair) text-[72px] font-bold text-[#F5F0E8] leading-tight mt-10">
+                    <h1 className="font-(family-name:--font-playfair) text-[72px] font-bold text-[#F5F0E8] leading-tight mt-10">
             {title}
           </h1>
 
-          {/* Subtitle */}
-          <p className="font-(family-name:--font-playfair) italic text-[36px] text-[#E8D48B]/70 mt-6">
+                    <p className="font-(family-name:--font-playfair) italic text-[36px] text-[#E8D48B]/70 mt-6">
             {subtitle}
           </p>
 
-          {/* Separator */}
-          <div className="flex items-center gap-4 mt-14">
+                    <div className="flex items-center gap-4 mt-14">
             <div className="w-[140px] h-px bg-[#C9A84C]/25" />
             <div
               className="w-3 h-3 rotate-45 border border-[#C9A84C]/40"
@@ -223,16 +209,14 @@ const StoryContent = forwardRef<HTMLDivElement, StoryContentProps>(
             <div className="w-[140px] h-px bg-[#C9A84C]/25" />
           </div>
 
-          {/* Espace libre pour sticker lien Instagram */}
-          <div className="mt-10 h-[140px] flex items-center">
+                    <div className="mt-10 h-[140px] flex items-center">
             <p className="font-(family-name:--font-inter) text-[22px] text-[#C9A84C]/30 tracking-wider">
               Lien dans la bio
             </p>
           </div>
         </div>
 
-        {/* Bottom accent */}
-        <div className="absolute bottom-[140px] flex items-center gap-3">
+                <div className="absolute bottom-[140px] flex items-center gap-3">
           <div className="w-10 h-px bg-[#C9A84C]/15" />
           <div className="w-2 h-2 rotate-45 bg-[#C9A84C]/15" />
           <div className="w-10 h-px bg-[#C9A84C]/15" />
