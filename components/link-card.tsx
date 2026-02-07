@@ -21,11 +21,18 @@ interface LinkCardProps {
   delay: number;
 }
 
-export function LinkCard({ title, description, href, icon, external, delay }: LinkCardProps) {
+export function LinkCard({
+  title,
+  description,
+  href,
+  icon,
+  external,
+  delay,
+}: LinkCardProps) {
   return (
     <a
       href={href}
-      className="group flex items-center gap-3.5 bg-dark-card border border-cream/[0.06] rounded-2xl p-4 text-cream no-underline transition-all duration-300 hover:border-gold hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.3)] animate-fade-in-up"
+      className="group flex items-center gap-3.5 bg-dark-card border border-cream/6 rounded-2xl p-4 text-cream no-underline transition-all duration-300 hover:border-gold hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(0,0,0,0.3)] animate-fade-in-up"
       style={{ animationDelay: `${delay}ms` }}
       {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
     >
@@ -35,7 +42,7 @@ export function LinkCard({ title, description, href, icon, external, delay }: Li
         {icons[icon]}
       </div>
       <div className="min-w-0">
-        <h3 className="text-[15px] font-semibold font-[family-name:var(--font-inter)]">
+        <h3 className="text-[15px] font-semibold font-(family-name:--font-inter)">
           {title}
         </h3>
         <p className="text-xs text-cream/40">{description}</p>

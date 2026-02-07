@@ -10,20 +10,20 @@ export default function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(114,47,55,0.3)_0%,transparent_50%),radial-gradient(ellipse_at_80%_100%,rgba(201,168,76,0.15)_0%,transparent_50%)]" />
       </div>
 
-      <div className="relative z-10 max-w-[480px] mx-auto px-5 pt-10 pb-16 flex flex-col items-center font-[family-name:var(--font-inter)]">
+      <div className="relative z-10 max-w-120 mx-auto px-5 pt-10 pb-16 flex flex-col items-center font-(family-name:--font-inter)">
         {/* Profile */}
         <section
           className="text-center mb-8 animate-fade-in-up"
           style={{ animationDelay: "100ms" }}
         >
-          <div className="w-28 h-28 rounded-full border-[3px] border-gold mx-auto mb-4 flex items-center justify-center font-[family-name:var(--font-playfair)] text-4xl font-bold text-gold bg-wine-dark shadow-[0_0_30px_rgba(201,168,76,0.2)]">
+          <div className="w-28 h-28 rounded-full border-[3px] border-gold mx-auto mb-4 flex items-center justify-center font-(family-name:--font-playfair) text-4xl font-bold text-gold bg-wine-dark shadow-[0_0_30px_rgba(201,168,76,0.2)]">
             E
           </div>
-          <h1 className="font-[family-name:var(--font-playfair)] text-[28px] font-bold tracking-wide mb-1">
+          <h1 className="font-(family-name:--font-playfair) text-[28px] font-bold tracking-wide mb-1">
             {siteConfig.name}
           </h1>
           <p className="text-sm text-gold mb-3">{siteConfig.handle}</p>
-          <p className="font-[family-name:var(--font-playfair)] italic text-base text-cream/60 mb-2">
+          <p className="font-(family-name:--font-playfair) italic text-base text-cream/60 mb-2">
             {siteConfig.tagline}
           </p>
           <p className="text-sm text-cream/40 tracking-[3px] uppercase font-light">
@@ -33,13 +33,13 @@ export default function Home() {
 
         {/* Countdown */}
         <section
-          className="w-full bg-gradient-to-br from-wine-dark to-wine border border-gold/20 rounded-2xl p-6 mb-6 text-center animate-fade-in-up"
+          className="w-full bg-linear-to-br from-wine-dark to-wine border border-gold/20 rounded-2xl p-6 mb-6 text-center animate-fade-in-up"
           style={{ animationDelay: "200ms" }}
         >
           <p className="text-[11px] uppercase tracking-[3px] text-gold font-semibold mb-1.5">
             Prochain événement
           </p>
-          <h2 className="font-[family-name:var(--font-playfair)] text-[22px] font-bold mb-1">
+          <h2 className="font-(family-name:--font-playfair) text-[22px] font-bold mb-1">
             {nextEvent.name}
           </h2>
           <p className="text-[13px] text-cream/50 mb-5">
@@ -73,7 +73,7 @@ export default function Home() {
 
         {/* Past events */}
         <h3
-          className="font-[family-name:var(--font-playfair)] text-lg text-center text-gold mb-4 animate-fade-in-up"
+          className="font-(family-name:--font-playfair) text-lg text-center text-gold mb-4 animate-fade-in-up"
           id="events"
           style={{ animationDelay: "600ms" }}
         >
@@ -86,7 +86,7 @@ export default function Home() {
           {pastEvents.map((event) => (
             <div
               key={event.name}
-              className="aspect-square rounded-xl bg-dark-card border border-cream/[0.06] flex flex-col items-center justify-center text-center p-4"
+              className="aspect-square rounded-xl bg-dark-card border border-cream/6 flex flex-col items-center justify-center text-center p-4"
             >
               <span className="text-3xl mb-2">{event.emoji}</span>
               <span className="text-[13px] font-semibold">{event.name}</span>

@@ -30,7 +30,7 @@ export function Countdown({ targetDate }: CountdownProps) {
       setTimeLeft(getTimeLeft(targetDate));
     }
 
-    update(); // initial sync
+    update();
     const interval = setInterval(update, 1000);
 
     return () => clearInterval(interval);
@@ -38,7 +38,7 @@ export function Countdown({ targetDate }: CountdownProps) {
 
   if (!timeLeft) {
     return (
-      <p className="font-[family-name:var(--font-playfair)] italic text-gold text-base mb-5">
+      <p className="font-(family-name:--font-playfair) italic text-gold text-base mb-5">
         L&apos;événement a commencé !
       </p>
     );
@@ -55,7 +55,7 @@ export function Countdown({ targetDate }: CountdownProps) {
     <div className="flex justify-center gap-4 sm:gap-6 mb-5">
       {units.map(({ value, label }) => (
         <div key={label} className="flex flex-col items-center">
-          <span className="text-3xl sm:text-4xl font-semibold text-gold-light font-[family-name:var(--font-inter)] tabular-nums">
+          <span className="text-3xl sm:text-4xl font-semibold text-gold-light font-(family-name:--font-inter) tabular-nums">
             {String(value).padStart(2, "0")}
           </span>
           <span className="text-[10px] uppercase tracking-[2px] text-cream/40 mt-1">

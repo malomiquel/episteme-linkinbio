@@ -1,22 +1,17 @@
-// ============================
-// CONFIGURATION DU SITE
-// Modifie ici pour mettre à jour le contenu !
-// ============================
-
 export const siteConfig = {
   name: "Episteme",
   handle: "@asso_episteme",
   tagline: "L'art de faire revivre",
   categories: ["Vin", "Art", "Musique"],
-  contactEmail: "contact@asso-episteme.fr",
+  contactEmail: "assoepisteme@gmail.com",
   instagramUrl: "https://www.instagram.com/asso_episteme/",
   helloassoUrl: "https://www.helloasso.com/associations/episteme",
 };
 
 export const nextEvent = {
-  name: "Vinum Noctis II",
-  date: "2026-03-08T19:30:00",
-  location: "La Péniche, Angers",
+  name: "Transmission",
+  date: "2026-03-14T19:30:00",
+  location: "River's King, Paris",
   time: "19h30",
   ticketUrl: "https://www.helloasso.com/associations/episteme",
 };
