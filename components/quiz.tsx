@@ -225,7 +225,7 @@ export function Quiz() {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                padding: "40px 28px",
+                padding: "32px 28px 80px 28px",
                 background: `
                   radial-gradient(circle at 50% 35%, ${result.accent}18 0%, transparent 50%),
                   radial-gradient(circle at 50% 50%, transparent 40%, rgba(0,0,0,0.3) 100%),
@@ -282,6 +282,9 @@ export function Quiz() {
                 </>
               )}
             </button>
+            <p className="text-cream/30 text-xs">
+              N&apos;oublie pas de nous taguer @asso_episteme !
+            </p>
 
             {/* Copy shareable link */}
             <button
