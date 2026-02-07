@@ -26,7 +26,7 @@ export const questions: Question[] = [
       { text: "Plateau de fromages affinés", scores: { bordeaux: 3, chateauneuf: 1 } },
       { text: "Huîtres et fruits de mer", scores: { sancerre: 3, champagne: 1 } },
       { text: "Côte de boeuf grillée", scores: { rhone: 3, bordeaux: 1 } },
-      { text: "Dessert au chocolat noir", scores: { chateauneuf: 3, champagne: 1 } },
+      { text: "Magret de canard aux figues", scores: { chateauneuf: 3, champagne: 1 } },
     ],
   },
   {

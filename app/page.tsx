@@ -31,6 +31,35 @@ export default function Home() {
           </p>
         </section>
 
+        {/* Featured */}
+        <a
+          href="/quiz"
+          data-umami-event="link_click"
+          data-umami-event-title="Quiz - Quel vin es-tu ?"
+          className="w-full group flex items-center gap-4 rounded-2xl p-4 mb-6 border border-gold/25 bg-gradient-to-r from-wine-dark/60 to-wine/40 backdrop-blur-sm transition-all duration-300 hover:border-gold/50 hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(201,168,76,0.15)] animate-fade-in-up"
+          style={{ animationDelay: "200ms" }}
+        >
+          <div className="w-11 h-11 rounded-xl bg-gold/15 flex items-center justify-center text-xl shrink-0">
+            🍷
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <h3 className="text-[15px] font-semibold text-cream/90">
+                Quel vin es-tu ?
+              </h3>
+              <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-gold/20 text-gold">
+                Quiz
+              </span>
+            </div>
+            <p className="text-xs text-cream/35">
+              Découvre quel vin correspond à ta personnalité
+            </p>
+          </div>
+          <span className="ml-auto text-gold/40 text-lg transition-all duration-300 group-hover:text-gold group-hover:translate-x-0.5">
+            ›
+          </span>
+        </a>
+
         {/* Countdown */}
         <section
           className="w-full bg-linear-to-br from-wine-dark/70 to-wine/50 border border-cream/8 rounded-2xl mb-6 text-center animate-fade-in-up backdrop-blur-sm overflow-hidden relative"
