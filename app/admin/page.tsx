@@ -1,16 +1,34 @@
 const tools = [
   {
     title: "Quiz en avant",
-    description: "Choisis le quiz affich\u00e9 sur la page d\u2019accueil",
+    description: "Choisis le quiz affiché sur la page d\u2019accueil",
     href: "/admin/featured",
     emoji: "🎯",
   },
   {
-    title: "G\u00e9n\u00e9rateur de story",
-    description: "Cr\u00e9e une image story Instagram",
-    href: "/admin/story",
-    emoji: "📱",
+    title: "Couvertures highlights",
+    description: "Génère les icônes pour tes stories à la une",
+    href: "/admin/highlights",
+    emoji: "⭕",
   },
+  {
+    title: "Carrousel",
+    description: "Crée des slides pour un post carrousel éducatif",
+    href: "/admin/carousel",
+    emoji: "📚",
+  },
+];
+
+const storyTemplates = [
+  { title: "Annonce", href: "/admin/story/annonce", emoji: "📱" },
+  { title: "Teaser", href: "/admin/story/teaser", emoji: "👀" },
+  { title: "Questions", href: "/admin/story/question", emoji: "❓" },
+  { title: "Sondage", href: "/admin/story/poll", emoji: "📊" },
+  { title: "Le saviez-vous", href: "/admin/story/fact", emoji: "💡" },
+  { title: "Save the date", href: "/admin/story/event", emoji: "📅" },
+  { title: "Citation", href: "/admin/story/quote", emoji: "✍️" },
+  { title: "This or That", href: "/admin/story/thisorthat", emoji: "⚔️" },
+  { title: "Nouveau post", href: "/admin/story/newpost", emoji: "🖼️" },
 ];
 
 export default function AdminHub() {
@@ -22,6 +40,13 @@ export default function AdminHub() {
 
       <div className="relative z-10 min-h-dvh flex flex-col items-center justify-center px-5 py-10 font-(family-name:--font-inter)">
         <div className="w-full max-w-md">
+          <a
+            href="/"
+            className="flex items-center gap-2 text-sm text-cream/50 hover:text-cream transition-colors w-fit mb-6"
+          >
+            <span className="text-base leading-none">&larr;</span>
+            Accueil
+          </a>
           <div className="text-center mb-10">
             <div className="w-20 h-20 rounded-full border-2 border-gold/40 mx-auto mb-4 overflow-hidden">
               <img
@@ -38,6 +63,10 @@ export default function AdminHub() {
             </p>
           </div>
 
+          {/* Outils */}
+          <p className="text-xs text-cream/25 uppercase tracking-widest font-semibold mb-3 px-1">
+            Outils
+          </p>
           <div className="flex flex-col gap-3">
             {tools.map((tool) => (
               <a
@@ -61,14 +90,25 @@ export default function AdminHub() {
             ))}
           </div>
 
-          <div className="text-center mt-8">
-            <a
-              href="/"
-              className="text-sm text-cream/25 hover:text-cream/50 transition-colors"
-            >
-              &larr; Retour &agrave; l&apos;accueil
-            </a>
+          {/* Stories section — compact grid */}
+          <p className="text-xs text-cream/25 uppercase tracking-widest font-semibold mb-3 px-1 mt-8">
+            Templates stories
+          </p>
+          <div className="grid grid-cols-2 gap-2.5">
+            {storyTemplates.map((t) => (
+              <a
+                key={t.href}
+                href={t.href}
+                className="group flex flex-col items-center gap-2 bg-dark-card/80 border border-cream/8 rounded-xl py-4 px-3 backdrop-blur-sm transition-all hover:border-gold/30 hover:-translate-y-0.5"
+              >
+                <span className="text-2xl">{t.emoji}</span>
+                <span className="text-[13px] font-medium text-cream/80 group-hover:text-cream transition-colors text-center leading-tight">
+                  {t.title}
+                </span>
+              </a>
+            ))}
           </div>
+
         </div>
       </div>
     </>

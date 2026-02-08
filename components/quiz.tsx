@@ -113,9 +113,12 @@ export function Quiz({ config = wineQuizConfig }: QuizProps) {
     if (!shareRef.current || sharing) return;
     setSharing(true);
 
+    const shareUrl = `${window.location.origin}${config.resultBasePath}/${resultProfile}`;
+    const shareText = `Je suis ${result.name} (${result.title}) ! Fais le quiz :`;
+
     try {
       const dataUrl = await toPng(shareRef.current, {
-        pixelRatio: 3,
+        pixelRatio: 2,
         cacheBust: true,
       });
 
@@ -125,6 +128,7 @@ export function Quiz({ config = wineQuizConfig }: QuizProps) {
         type: "image/png",
       });
 
+      // Try native share with image
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
         track("quiz_shared", {
           method: "native",
@@ -134,30 +138,67 @@ export function Quiz({ config = wineQuizConfig }: QuizProps) {
         await navigator.share({
           files: [file],
           title: `Je suis ${result.name} !`,
-          text: `Je suis ${result.name} (${result.title}) ! Fais le quiz : ${window.location.origin}${config.resultBasePath}/../`,
-          url: `${window.location.origin}${config.resultBasePath}/${resultProfile}`,
+          text: shareText,
+          url: shareUrl,
         });
-      } else {
+        return;
+      }
+
+      // Native share without image (Android fallback)
+      if (navigator.share) {
         track("quiz_shared", {
-          method: "download",
+          method: "native_no_image",
           result: result.name,
           profile: resultProfile,
         });
+        await navigator.share({
+          title: `Je suis ${result.name} !`,
+          text: shareText,
+          url: shareUrl,
+        });
+        return;
+      }
+
+      // Desktop fallback: download image
+      track("quiz_shared", {
+        method: "download",
+        result: result.name,
+        profile: resultProfile,
+      });
+      const link = document.createElement("a");
+      link.download = `${config.shareFileName}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      if ((err as Error)?.name === "AbortError") return;
+
+      // Image generation failed — try share without image
+      if (navigator.share) {
+        try {
+          track("quiz_shared", {
+            method: "native_no_image",
+            result: result.name,
+            profile: resultProfile,
+          });
+          await navigator.share({
+            title: `Je suis ${result.name} !`,
+            text: shareText,
+            url: shareUrl,
+          });
+          return;
+        } catch (e) {
+          if ((e as Error)?.name === "AbortError") return;
+        }
+      }
+
+      // Last resort: try download again
+      try {
+        const dataUrl = await toPng(shareRef.current!, { pixelRatio: 2 });
         const link = document.createElement("a");
         link.download = `${config.shareFileName}.png`;
         link.href = dataUrl;
         link.click();
-      }
-    } catch (err) {
-      if ((err as Error)?.name !== "AbortError") {
-        try {
-          const dataUrl = await toPng(shareRef.current!, { pixelRatio: 3 });
-          const link = document.createElement("a");
-          link.download = `${config.shareFileName}.png`;
-          link.href = dataUrl;
-          link.click();
-        } catch {}
-      }
+      } catch {}
     } finally {
       setSharing(false);
     }

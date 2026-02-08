@@ -72,6 +72,13 @@ export default function FeaturedPage() {
 
       <div className="relative z-10 min-h-dvh flex flex-col items-center justify-center px-5 py-10 font-(family-name:--font-inter)">
         <div className="w-full max-w-md">
+          <a
+            href="/admin"
+            className="flex items-center gap-2 text-sm text-cream/50 hover:text-cream transition-colors w-fit mb-6"
+          >
+            <span className="text-base leading-none">&larr;</span>
+            Retour
+          </a>
           <div className="text-center mb-8">
             <p className="text-[11px] uppercase tracking-[3px] text-gold/60 mb-2">
               Admin
@@ -242,14 +249,6 @@ export default function FeaturedPage() {
             )}
           </div>
 
-          <div className="text-center mt-6">
-            <a
-              href="/admin"
-              className="text-sm text-cream/30 hover:text-cream/60 transition-colors"
-            >
-              &larr; Retour
-            </a>
-          </div>
         </div>
       </div>
     </>
