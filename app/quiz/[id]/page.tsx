@@ -1,7 +1,13 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import { quizzes } from "../../../config/quizzes";
-import { Quiz } from "../../../components/quiz";
+import { QuizSkeleton } from "../../../components/quiz-skeleton";
+
+const Quiz = dynamic(() => import("../../../components/quiz").then(m => ({ default: m.Quiz })), {
+  loading: () => <QuizSkeleton />,
+  ssr: true,
+});
 
 type Params = Promise<{ id: string }>;
 

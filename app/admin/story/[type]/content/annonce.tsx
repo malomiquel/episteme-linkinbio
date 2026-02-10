@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { forwardRef } from "react";
 
 const AnnonceContent = forwardRef<HTMLDivElement, Record<string, string>>(
@@ -34,23 +35,25 @@ const AnnonceContent = forwardRef<HTMLDivElement, Record<string, string>>(
         {/* Content */}
         <div className="relative z-10 flex flex-col items-center w-full h-full">
           {/* Header — logo + handle */}
-          <div className="flex items-center gap-6 pt-[110px]">
-            <div className="w-[80px] h-[80px] rounded-full border-[2px] border-[#C9A84C]/50 overflow-hidden">
-              <img
+          <div className="flex items-center gap-6 pt-24">
+            <div className="size-30 rounded-full border-2 border-gold/50 overflow-hidden">
+              <Image
                 src="/logo.svg"
                 alt="Episteme"
                 className="w-full h-full object-cover"
+                width={120}
+                height={120}
               />
             </div>
-            <p className="font-(family-name:--font-inter) text-[24px] text-[#C9A84C]/50 tracking-wider">
+            <p className="font-(family-name:--font-inter) text-3xl text-gold/50 tracking-wider">
               @asso_episteme
             </p>
           </div>
 
           {/* Main section */}
-          <div className="flex-1 flex flex-col items-center justify-center text-center px-14 -mt-8">
+          <div className="flex-1 flex flex-col items-center justify-center text-center">
             {/* Badge */}
-            <span className="font-(family-name:--font-inter) text-[22px] uppercase tracking-[6px] font-semibold px-10 py-4 rounded-full border-[1.5px] border-[#C9A84C]/30 text-[#C9A84C]/80">
+            <span className="font-(family-name:--font-inter) text-3xl uppercase tracking-[10px] font-semibold px-12 py-4 rounded-full border-2 border-gold/30 text-gold/80">
               {label}
             </span>
 
@@ -58,33 +61,33 @@ const AnnonceContent = forwardRef<HTMLDivElement, Record<string, string>>(
             <div className="text-[120px] mt-12 leading-none">{emoji}</div>
 
             {/* Title */}
-            <h1 className="font-(family-name:--font-playfair) text-[80px] font-bold text-[#F5F0E8] leading-tight mt-10">
+            <h1 className="font-(family-name:--font-playfair) text-7xl font-bold text-cream leading-tight mt-10">
               {title}
             </h1>
 
             {/* Subtitle */}
-            <p className="font-(family-name:--font-playfair) italic text-[42px] text-[#E8D48B]/75 mt-6">
+            <p className="font-(family-name:--font-playfair) italic text-5xl text-gold-light/75 mt-6">
               {subtitle}
             </p>
 
             {/* Separator */}
             <div className="flex items-center gap-5 mt-16">
-              <div className="w-[140px] h-px bg-[#C9A84C]/25" />
-              <div className="w-3.5 h-3.5 rotate-45 border-[1.5px] border-[#C9A84C]/40" />
-              <div className="w-[140px] h-px bg-[#C9A84C]/25" />
+              <div className="w-35 h-0.5 bg-gold/25" />
+              <div className="size-4 rotate-45 border-[1.5px] border-gold/40" />
+              <div className="w-35 h-0.5 bg-gold/25" />
             </div>
 
             {/* Call to action */}
-            <p className="font-(family-name:--font-inter) text-[32px] font-medium text-[#C9A84C]/60 tracking-wide mt-14">
+            <p className="font-(family-name:--font-inter) text-4xl font-medium text-gold/60 tracking-wide mt-14">
               {cta}
             </p>
           </div>
 
           {/* Bottom ornament */}
-          <div className="flex items-center gap-3 mb-[120px]">
-            <div className="w-12 h-px bg-[#C9A84C]/20" />
-            <div className="w-2.5 h-2.5 rotate-45 bg-[#C9A84C]/20" />
-            <div className="w-12 h-px bg-[#C9A84C]/20" />
+          <div className="flex items-center gap-3 mb-30">
+            <div className="w-12 h-0.5 bg-gold/20" />
+            <div className="size-3.5 rotate-45 bg-gold/20" />
+            <div className="w-12 h-0.5 bg-gold/20" />
           </div>
         </div>
       </div>
