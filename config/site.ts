@@ -10,21 +10,15 @@ export const siteConfig = {
 
 export const nextEvent = {
   name: "Transmission II",
-  date: "2026-03-14T19:30:00",
+  date: "2026-03-14T20:00:00",
   location: "River's King, Paris",
-  time: "19h30",
+  time: "20h00",
   ticketUrl: "https://www.helloasso.com/associations/episteme",
-  announced: false,
+  announced: true,
+  ticketOpen: false,
 };
 
 export const links = [
-  {
-    title: "Billetterie",
-    description: "Réserve ta place pour nos événements",
-    href: "https://www.helloasso.com/associations/episteme",
-    icon: "ticket" as const,
-    external: true,
-  },
   {
     title: "Instagram",
     description: "Suis-nous pour les dernières actus",

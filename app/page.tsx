@@ -2,6 +2,7 @@ import { Countdown } from "../components/countdown";
 import { LinkCard } from "../components/link-card";
 import { FeaturedQuiz } from "../components/featured-quiz";
 import { siteConfig, nextEvent, links, pastEvents } from "../config/site";
+import { cn } from "@/lib/utils";
 
 export default function Home() {
   return (
@@ -16,7 +17,11 @@ export default function Home() {
           style={{ animationDelay: "100ms" }}
         >
           <div className="w-28 h-28 rounded-full border-2 border-gold/60 mx-auto mb-4 overflow-hidden shadow-[0_0_40px_rgba(201,168,76,0.12)]">
-            <img src="/logo.svg" alt="Episteme" className="w-full h-full object-cover" />
+            <img
+              src="/logo.svg"
+              alt="Episteme"
+              className="w-full h-full object-cover"
+            />
           </div>
           <h1 className="font-(family-name:--font-playfair) text-3xl font-bold tracking-wide mb-1 text-cream">
             {siteConfig.name}
@@ -57,14 +62,26 @@ export default function Home() {
               <Countdown targetDate={nextEvent.date} />
 
               <a
-                href={nextEvent.ticketUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                data-umami-event="ticket_click"
-                data-umami-event-event={nextEvent.name}
-                className="inline-flex items-center gap-2 bg-gold text-dark px-7 py-3 rounded-full font-semibold text-sm transition-all hover:bg-gold-light hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(201,168,76,0.25)]"
+                href={nextEvent.ticketOpen ? nextEvent.ticketUrl : undefined}
+                target={nextEvent.ticketOpen ? "_blank" : undefined}
+                rel={nextEvent.ticketOpen ? "noopener noreferrer" : undefined}
+                data-umami-event={
+                  nextEvent.ticketOpen ? "ticket_click" : undefined
+                }
+                data-umami-event-event={
+                  nextEvent.ticketOpen ? nextEvent.name : undefined
+                }
+                aria-disabled={!nextEvent.ticketOpen}
+                className={cn(
+                  "inline-flex items-center gap-2 px-7 py-3 rounded-full font-semibold text-sm transition-all",
+                  nextEvent.ticketOpen
+                    ? "bg-gold text-dark hover:bg-gold-light hover:-translate-y-0.5 hover:shadow-[0_8px_25px_rgba(201,168,76,0.25)]"
+                    : "bg-gray-300 text-gray-500 cursor-not-allowed pointer-events-none",
+                )}
               >
-                Réserver ma place
+                {nextEvent.ticketOpen
+                  ? "Réserver ma place"
+                  : "Billetterie prochainement"}
               </a>
             </div>
           ) : (
