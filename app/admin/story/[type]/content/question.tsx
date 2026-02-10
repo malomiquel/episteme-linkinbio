@@ -20,7 +20,7 @@ function StoryBackground() {
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(0,0,0,0.5) 100%)",
+            "radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(0,0,0,0.2) 100%)",
         }}
       />
     </>
@@ -87,7 +87,7 @@ const QuestionContent = forwardRef<HTMLDivElement, Record<string, string>>(
         <div
           ref={ref}
           className="relative flex flex-col items-center overflow-hidden"
-          style={{ width: 1080, height: 1920, background: "#1E0A12" }}
+          style={{ width: 1080, height: 1920, background: "#2A1520" }}
         >
           <StoryBackground />
 

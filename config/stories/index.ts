@@ -1,7 +1,7 @@
 export interface StoryField {
   name: string;
   label: string;
-  type: "text" | "textarea" | "emoji-picker" | "toggle" | "variant-picker";
+  type: "text" | "textarea" | "emoji-picker" | "toggle" | "variant-picker" | "image-upload";
   default: string;
   rows?: number;
   options?: { id: string; label: string; preview?: string }[];
@@ -28,6 +28,7 @@ export { eventConfig } from "./event";
 export { quoteConfig } from "./quote";
 export { thisorthatConfig } from "./thisorthat";
 export { newpostConfig } from "./newpost";
+export { publicationConfig } from "./publication";
 
 import { annonceConfig } from "./annonce";
 import { teaserConfig } from "./teaser";
@@ -38,6 +39,7 @@ import { eventConfig } from "./event";
 import { quoteConfig } from "./quote";
 import { thisorthatConfig } from "./thisorthat";
 import { newpostConfig } from "./newpost";
+import { publicationConfig } from "./publication";
 
 export const storyConfigs: Record<string, StoryConfig> = {
   annonce: annonceConfig,
@@ -49,6 +51,7 @@ export const storyConfigs: Record<string, StoryConfig> = {
   quote: quoteConfig,
   thisorthat: thisorthatConfig,
   newpost: newpostConfig,
+  publication: publicationConfig,
 };
 
 export const storyTypes = Object.keys(storyConfigs);

@@ -29,6 +29,7 @@ const storyTemplates = [
   { title: "Citation", href: "/admin/story/quote", emoji: "✍️" },
   { title: "This or That", href: "/admin/story/thisorthat", emoji: "⚔️" },
   { title: "Nouveau post", href: "/admin/story/newpost", emoji: "🖼️" },
+  { title: "Publication", href: "/admin/story/publication", emoji: "📰" },
 ];
 
 export default function AdminHub() {

@@ -9,7 +9,7 @@ const AnnonceContent = forwardRef<HTMLDivElement, Record<string, string>>(
         style={{
           width: 1080,
           height: 1920,
-          background: "#1E0A12",
+          background: "#2A1520",
         }}
       >
         {/* Background gradients */}
@@ -27,7 +27,7 @@ const AnnonceContent = forwardRef<HTMLDivElement, Record<string, string>>(
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(0,0,0,0.45) 100%)",
+              "radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(0,0,0,0.2) 100%)",
           }}
         />
 

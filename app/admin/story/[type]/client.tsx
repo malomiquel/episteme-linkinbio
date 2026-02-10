@@ -12,6 +12,7 @@ import EventContent from "./content/event";
 import QuoteContent from "./content/quote";
 import ThisOrThatContent from "./content/thisorthat";
 import NewPostContent from "./content/newpost";
+import PublicationContent from "./content/publication";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const contentMap: Record<string, React.ComponentType<any>> = {
@@ -24,6 +25,7 @@ const contentMap: Record<string, React.ComponentType<any>> = {
   quote: QuoteContent,
   thisorthat: ThisOrThatContent,
   newpost: NewPostContent,
+  publication: PublicationContent,
 };
 
 export default function StoryPageClient({ type }: { type: string }) {
