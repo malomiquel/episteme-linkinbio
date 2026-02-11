@@ -36,7 +36,7 @@ export const links = [
   {
     title: "Nous contacter",
     description: "Partenariats, questions, collaborations",
-    href: "mailto:contact@asso-episteme.fr",
+    href: "mailto:assoepisteme@gmail.com",
     icon: "contact" as const,
     external: false,
   },
