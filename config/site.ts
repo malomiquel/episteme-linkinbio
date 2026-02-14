@@ -13,9 +13,10 @@ export const nextEvent = {
   date: "2026-03-14T20:00:00",
   location: "River's King, Paris",
   time: "20h00",
-  ticketUrl: "https://www.helloasso.com/associations/episteme",
+  ticketUrl:
+    "https://www.helloasso.com/associations/episteme/evenements/transmission-1",
   announced: true,
-  ticketOpen: false,
+  ticketOpen: true,
 };
 
 export const links = [

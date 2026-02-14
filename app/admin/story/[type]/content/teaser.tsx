@@ -14,7 +14,6 @@ const TeaserContent = forwardRef<HTMLDivElement, Record<string, string>>(
         className="relative flex flex-col items-center overflow-hidden"
         style={{ width: 1080, height: 1920, background: "#2A1520" }}
       >
-        {/* Background */}
         <div
           className="absolute inset-0"
           style={{

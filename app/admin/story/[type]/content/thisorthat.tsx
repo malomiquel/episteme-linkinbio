@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { forwardRef } from "react";
 
 const ThisOrThatContent = forwardRef<HTMLDivElement, Record<string, string>>(
@@ -47,31 +48,34 @@ const ThisOrThatContent = forwardRef<HTMLDivElement, Record<string, string>>(
         />
 
         <div className="relative z-10 flex flex-col items-center w-full h-full">
-          {/* Header */}
-          <div className="flex flex-col items-center pt-[110px] px-14">
+          <div className="flex flex-col items-center pt-24 px-14">
             <div className="flex items-center gap-5 mb-10">
-              <div className="w-[80px] h-[80px] rounded-full border-[2px] border-[#C9A84C]/50 overflow-hidden">
-                <img src="/logo.svg" alt="Episteme" className="w-full h-full object-cover" />
+              <div className="size-30 rounded-full border-2 border-gold/50 overflow-hidden">
+                <Image
+                  src="/logo.svg"
+                  alt="Episteme"
+                  className="w-full h-full object-cover"
+                  width={120}
+                  height={120}
+                />
               </div>
-              <p className="font-(family-name:--font-inter) text-[22px] text-[#C9A84C]/50 tracking-wider">
+              <p className="font-(family-name:--font-inter) text-3xl text-gold/50 tracking-wider">
                 @asso_episteme
               </p>
             </div>
 
-            <span className="font-(family-name:--font-inter) text-[20px] uppercase tracking-[6px] font-semibold px-10 py-3.5 rounded-full border-[1.5px] border-[#C9A84C]/30 text-[#C9A84C]/70">
+            <span className="font-(family-name:--font-inter) text-[20px] uppercase tracking-[6px] font-semibold px-10 py-3.5 rounded-full border-[1.5px] border-gold/30 text-gold/70">
               This or That
             </span>
 
-            <h1 className="font-(family-name:--font-playfair) text-[64px] font-bold text-[#F5F0E8] leading-tight mt-10 text-center">
+            <h1 className="font-(family-name:--font-playfair) text-[70px] font-bold text-cream leading-tight mt-10 text-center">
               {title}
             </h1>
           </div>
 
-          {/* Two options split */}
-          <div className="flex-1 flex flex-col items-center justify-center w-full px-14 gap-8">
-            {/* Option A */}
+          <div className="flex-1 flex flex-col items-center w-full mt-24 px-14 gap-24">
             <div
-              className="w-full rounded-[32px] py-14 flex flex-col items-center"
+              className="w-full rounded-4xl py-10 flex flex-col items-center"
               style={{
                 background:
                   "linear-gradient(160deg, rgba(140,58,68,0.2) 0%, rgba(140,58,68,0.06) 100%)",
@@ -79,30 +83,21 @@ const ThisOrThatContent = forwardRef<HTMLDivElement, Record<string, string>>(
                 boxShadow: "0 0 60px rgba(140,58,68,0.08)",
               }}
             >
-              <span className="text-[72px] mb-4">{emojiA}</span>
-              <p className="font-(family-name:--font-playfair) text-[48px] font-bold text-[#F5F0E8]">
+              <span className="text-[100px] mb-4">{emojiA}</span>
+              <p className="font-(family-name:--font-playfair) text-[60px] font-bold text-cream">
                 {optionA}
               </p>
             </div>
 
-            {/* Sticker sondage placeholder */}
-            <div
-              className="w-full rounded-[24px] flex flex-col items-center justify-center py-6 -my-2"
-              style={{
-                border: "3px dashed rgba(201,168,76,0.25)",
-                background:
-                  "linear-gradient(170deg, rgba(201,168,76,0.07) 0%, rgba(201,168,76,0.015) 100%)",
-              }}
-            >
-              <span className="text-[28px] opacity-40 mb-2">📊</span>
-              <p className="font-(family-name:--font-inter) text-[18px] text-[#C9A84C]/25 tracking-wide">
+            <div className="w-full rounded-3xl flex flex-col items-center justify-center py-24 -my-2">
+              <span className="text-3xl opacity-40 mb-2">📊</span>
+              <p className="font-(family-name:--font-inter) text-[18px] text-gold/25 tracking-wide">
                 Sticker Sondage ici
               </p>
             </div>
 
-            {/* Option B */}
             <div
-              className="w-full rounded-[32px] py-14 flex flex-col items-center"
+              className="w-full rounded-4xl py-10 flex flex-col items-center"
               style={{
                 background:
                   "linear-gradient(160deg, rgba(201,168,76,0.12) 0%, rgba(201,168,76,0.04) 100%)",
@@ -110,24 +105,18 @@ const ThisOrThatContent = forwardRef<HTMLDivElement, Record<string, string>>(
                 boxShadow: "0 0 60px rgba(201,168,76,0.06)",
               }}
             >
-              <span className="text-[72px] mb-4">{emojiB}</span>
-              <p className="font-(family-name:--font-playfair) text-[48px] font-bold text-[#F5F0E8]">
+              <span className="text-[100px] mb-4">{emojiB}</span>
+              <p className="font-(family-name:--font-playfair) text-[60px] font-bold text-cream">
                 {optionB}
               </p>
             </div>
           </div>
-
-          {/* Bottom text */}
-          <p className="font-(family-name:--font-inter) text-[24px] text-[#C9A84C]/25 tracking-wider mb-[160px]">
-            Votez en story !
-          </p>
         </div>
 
-        {/* Bottom ornament */}
-        <div className="absolute bottom-[120px] flex items-center gap-3">
-          <div className="w-12 h-px bg-[#C9A84C]/20" />
-          <div className="w-2.5 h-2.5 rotate-45 bg-[#C9A84C]/20" />
-          <div className="w-12 h-px bg-[#C9A84C]/20" />
+        <div className="absolute bottom-30 flex items-center gap-3">
+          <div className="w-12 h-px bg-gold/20" />
+          <div className="w-2.5 h-2.5 rotate-45 bg-gold/20" />
+          <div className="w-12 h-px bg-gold/20" />
         </div>
       </div>
     );
