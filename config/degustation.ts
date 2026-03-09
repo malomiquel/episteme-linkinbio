@@ -6,12 +6,11 @@ export interface Stand {
 }
 
 export const STANDS: Stand[] = [
-  { id: "stand-1", name: "Bordeaux Rouge", emoji: "🍷", description: "Château Margaux 2018" },
-  { id: "stand-2", name: "Champagne", emoji: "🥂", description: "Blanc de Blancs" },
-  { id: "stand-3", name: "Bourgogne Blanc", emoji: "🫧", description: "Chablis Premier Cru" },
-  { id: "stand-4", name: "Côtes-du-Rhône", emoji: "🌿", description: "Grenache & Syrah" },
-  { id: "stand-5", name: "Sancerre", emoji: "⚡", description: "Sauvignon Blanc" },
-  { id: "stand-6", name: "Châteauneuf-du-Pape", emoji: "🔥", description: "Cuvée du Pape" },
+  { id: "stand-1", name: "Champagne Maison Demière", emoji: "🥂" },
+  { id: "stand-2", name: "Rosé Domaine Gassier", emoji: "🌸" },
+  { id: "stand-3", name: "Armagnac Armin", emoji: "🥃" },
+  { id: "stand-4", name: "Mon Chenin — A. Monmousseau", emoji: "🍾" },
+  { id: "stand-5", name: "Chinon Rouge", emoji: "🍷" },
 ];
 
 export function getStand(id: string): Stand | undefined {

@@ -7,10 +7,11 @@ import { STANDS } from "../../../../config/degustation";
 type Params = Promise<{ token: string }>;
 
 function WineGlass({ filled, total }: { filled: number; total: number }) {
-  const pct = total === 0 ? 0 : filled / total;
+  const rawPct = total === 0 ? 0 : filled / total;
+  const pct = rawPct * 0.8; // max visual fill = 80%
   const complete = filled === total;
-  const wineColor = complete ? "#C9A84C" : "#7B2235";
-  const wineLight = complete ? "#E8C55A" : "#A63348";
+  const wineColor = "#7B2235";
+  const wineLight = "#A63348";
 
   // viewBox 0 0 100 160
   // Realistic wine glass: curved bowl via bezier, thin stem, wide base
@@ -103,21 +104,57 @@ function WineGlass({ filled, total }: { filled: number; total: number }) {
       {/* Base */}
       <ellipse cx="50" cy="145" rx="22" ry="5" fill="rgba(245,240,232,0.14)" stroke="rgba(245,240,232,0.28)" strokeWidth="1" />
 
-      {/* Bubbles when complete */}
+      {/* Bubbles always visible in the wine */}
+      {pct > 0 && (
+        <>
+          <circle cx="40" cy={fillTop + 10} r="2" fill="rgba(200,100,120,0.5)">
+            <animate attributeName="cy" values={`${fillTop + 10};${fillTop - 5}`} dur="2.2s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.5;0" dur="2.2s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="54" cy={fillTop + 18} r="1.4" fill="rgba(200,100,120,0.35)">
+            <animate attributeName="cy" values={`${fillTop + 18};${fillTop}`} dur="2.8s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.4;0" dur="2.8s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="47" cy={fillTop + 28} r="1" fill="rgba(200,100,120,0.3)">
+            <animate attributeName="cy" values={`${fillTop + 28};${fillTop + 8}`} dur="1.9s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.35;0" dur="1.9s" repeatCount="indefinite" />
+          </circle>
+        </>
+      )}
+
+      {/* Completion: sparkles around the glass */}
       {complete && (
         <>
-          <circle cx="40" cy={fillTop + 10} r="2.5" fill="rgba(201,168,76,0.55)">
-            <animate attributeName="cy" values={`${fillTop + 10};${fillTop - 20}`} dur="1.8s" repeatCount="indefinite" />
-            <animate attributeName="opacity" values="0.6;0" dur="1.8s" repeatCount="indefinite" />
-          </circle>
-          <circle cx="52" cy={fillTop + 20} r="1.8" fill="rgba(201,168,76,0.4)">
-            <animate attributeName="cy" values={`${fillTop + 20};${fillTop - 10}`} dur="2.3s" repeatCount="indefinite" />
-            <animate attributeName="opacity" values="0.5;0" dur="2.3s" repeatCount="indefinite" />
-          </circle>
-          <circle cx="46" cy={fillTop + 30} r="1.2" fill="rgba(201,168,76,0.3)">
-            <animate attributeName="cy" values={`${fillTop + 30};${fillTop}`} dur="1.5s" repeatCount="indefinite" />
-            <animate attributeName="opacity" values="0.4;0" dur="1.5s" repeatCount="indefinite" />
-          </circle>
+          {/* Top-left sparkle */}
+          <g>
+            <line x1="6" y1="20" x2="6" y2="28" stroke="#C9A84C" strokeWidth="1.5" strokeLinecap="round">
+              <animate attributeName="opacity" values="0;1;0" dur="1.4s" repeatCount="indefinite" />
+            </line>
+            <line x1="2" y1="24" x2="10" y2="24" stroke="#C9A84C" strokeWidth="1.5" strokeLinecap="round">
+              <animate attributeName="opacity" values="0;1;0" dur="1.4s" repeatCount="indefinite" />
+            </line>
+          </g>
+          {/* Top-right sparkle */}
+          <g>
+            <line x1="94" y1="14" x2="94" y2="22" stroke="#C9A84C" strokeWidth="1.5" strokeLinecap="round">
+              <animate attributeName="opacity" values="0;1;0" dur="1.8s" begin="0.4s" repeatCount="indefinite" />
+            </line>
+            <line x1="90" y1="18" x2="98" y2="18" stroke="#C9A84C" strokeWidth="1.5" strokeLinecap="round">
+              <animate attributeName="opacity" values="0;1;0" dur="1.8s" begin="0.4s" repeatCount="indefinite" />
+            </line>
+          </g>
+          {/* Right mid sparkle (small) */}
+          <g>
+            <line x1="90" y1="50" x2="90" y2="56" stroke="#C9A84C" strokeWidth="1" strokeLinecap="round">
+              <animate attributeName="opacity" values="0;1;0" dur="1.2s" begin="0.8s" repeatCount="indefinite" />
+            </line>
+            <line x1="87" y1="53" x2="93" y2="53" stroke="#C9A84C" strokeWidth="1" strokeLinecap="round">
+              <animate attributeName="opacity" values="0;1;0" dur="1.2s" begin="0.8s" repeatCount="indefinite" />
+            </line>
+          </g>
+          {/* Checkmark overlay on the bowl */}
+          <circle cx="50" cy="58" r="12" fill="rgba(201,168,76,0.15)" stroke="rgba(201,168,76,0.5)" strokeWidth="1.5" />
+          <path d="M44,58 L48,63 L57,52" fill="none" stroke="#C9A84C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </>
       )}
     </svg>
