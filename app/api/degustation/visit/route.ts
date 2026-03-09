@@ -15,8 +15,9 @@ export async function POST(request: Request) {
   }
 
   const data = await readData();
+  const guest = data.guests.find((g) => g.token === token);
 
-  if (!data.guests.includes(token)) {
+  if (!guest) {
     return NextResponse.json({ error: "invité inconnu" }, { status: 404 });
   }
 
@@ -33,6 +34,7 @@ export async function POST(request: Request) {
     alreadyVisited,
     stand: { id: stand.id, name: stand.name, emoji: stand.emoji },
     totalVisits: data.visits[token].length,
+    guestName: guest.name || null,
   });
 }
 
@@ -45,10 +47,14 @@ export async function GET(request: Request) {
   }
 
   const data = await readData();
+  const guest = data.guests.find((g) => g.token === token);
 
-  if (!data.guests.includes(token)) {
+  if (!guest) {
     return NextResponse.json({ error: "invité inconnu" }, { status: 404 });
   }
 
-  return NextResponse.json({ visits: data.visits[token] ?? [] });
+  return NextResponse.json({
+    visits: data.visits[token] ?? [],
+    name: guest.name || null,
+  });
 }

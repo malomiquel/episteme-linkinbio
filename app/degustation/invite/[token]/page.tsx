@@ -9,6 +9,7 @@ type Params = Promise<{ token: string }>;
 export default function InvitePage({ params }: { params: Params }) {
   const { token } = use(params);
   const [visits, setVisits] = useState<string[]>([]);
+  const [guestName, setGuestName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [invalid, setInvalid] = useState(false);
 
@@ -22,7 +23,10 @@ export default function InvitePage({ params }: { params: Params }) {
         return r.json();
       })
       .then((data) => {
-        if (data) setVisits(data.visits ?? []);
+        if (data) {
+          setVisits(data.visits ?? []);
+          setGuestName(data.name ?? null);
+        }
       })
       .finally(() => setLoading(false));
   }, [token]);
@@ -61,7 +65,7 @@ export default function InvitePage({ params }: { params: Params }) {
               Dégustation Episteme
             </p>
             <h1 className="font-(family-name:--font-playfair) text-2xl font-bold text-cream">
-              Mon badge
+              {guestName || "Mon badge"}
             </h1>
           </div>
 

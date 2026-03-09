@@ -8,8 +8,8 @@ type Params = Promise<{ standId: string }>;
 type ScanState =
   | { status: "scanning" }
   | { status: "loading" }
-  | { status: "ok"; standName: string; totalVisits: number }
-  | { status: "already"; standName: string }
+  | { status: "ok"; standName: string; totalVisits: number; guestName: string | null }
+  | { status: "already"; standName: string; guestName: string | null }
   | { status: "error"; message: string };
 
 export default function StandPage({ params }: { params: Params }) {
@@ -41,9 +41,9 @@ export default function StandPage({ params }: { params: Params }) {
         } else {
           const data = await res.json();
           if (data.alreadyVisited) {
-            setScanState({ status: "already", standName: data.stand.name });
+            setScanState({ status: "already", standName: data.stand.name, guestName: data.guestName ?? null });
           } else {
-            setScanState({ status: "ok", standName: data.stand.name, totalVisits: data.totalVisits });
+            setScanState({ status: "ok", standName: data.stand.name, totalVisits: data.totalVisits, guestName: data.guestName ?? null });
           }
         }
       } catch {
@@ -144,7 +144,9 @@ export default function StandPage({ params }: { params: Params }) {
               <span className="text-5xl">✅</span>
             </div>
             <div className="text-center">
-              <p className="text-green-400 text-xl font-bold">Bienvenue !</p>
+              <p className="text-green-400 text-xl font-bold">
+                {scanState.guestName ? `Bienvenue, ${scanState.guestName.split(" ")[0]} !` : "Bienvenue !"}
+              </p>
               <p className="text-cream/60 text-sm mt-1">
                 Première visite au stand <strong className="text-cream/90">{scanState.standName}</strong>
               </p>
@@ -164,8 +166,11 @@ export default function StandPage({ params }: { params: Params }) {
             </div>
             <div className="text-center">
               <p className="text-red-400 text-xl font-bold">Déjà dégusté !</p>
+              {scanState.guestName && (
+                <p className="text-cream/80 text-sm font-semibold mt-1">{scanState.guestName}</p>
+              )}
               <p className="text-cream/60 text-sm mt-1">
-                Cet invité a déjà visité{" "}
+                {scanState.guestName ? "a" : "Cet invité a"} déjà visité{" "}
                 <strong className="text-cream/90">{scanState.standName}</strong>
               </p>
             </div>
