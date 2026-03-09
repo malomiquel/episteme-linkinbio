@@ -110,6 +110,8 @@ export async function POST(request: Request) {
       if (existing) {
         // Update name/email in case it changed, keep token
         existing.name = name;
+        existing.firstName = ticket.prenomParticipant;
+        existing.lastName = ticket.nomParticipant;
         existing.email = ticket.emailPayeur;
         existing.ticketType = ticket.tarif;
         updated++;
@@ -120,6 +122,8 @@ export async function POST(request: Request) {
           token,
           ticketId: ticket.numeroBillet,
           name,
+          firstName: ticket.prenomParticipant,
+          lastName: ticket.nomParticipant,
           email: ticket.emailPayeur,
           ticketType: ticket.tarif,
         };

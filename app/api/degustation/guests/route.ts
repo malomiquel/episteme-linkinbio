@@ -9,6 +9,8 @@ export interface Guest {
   token: string;
   ticketId: string;
   name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   ticketType: string;
 }
@@ -69,7 +71,7 @@ export async function POST(request: Request) {
   const newGuests: Guest[] = [];
   for (let i = 0; i < count; i++) {
     const token = crypto.randomUUID().replace(/-/g, "").slice(0, 12);
-    const guest: Guest = { token, ticketId: token, name: "", email: "", ticketType: "" };
+    const guest: Guest = { token, ticketId: token, name: "", firstName: "", lastName: "", email: "", ticketType: "" };
     newGuests.push(guest);
     data.guests.push(guest);
     data.visits[token] = [];
