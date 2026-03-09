@@ -6,6 +6,12 @@ const tools = [
     emoji: "🎯",
   },
   {
+    title: "Dégustation",
+    description: "Gère les badges QR code pour la dégustation de vin",
+    href: "/admin/degustation",
+    emoji: "🍷",
+  },
+  {
     title: "Couvertures highlights",
     description: "Génère les icônes pour tes stories à la une",
     href: "/admin/highlights",
