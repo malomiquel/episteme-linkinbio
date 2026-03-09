@@ -50,7 +50,7 @@ export default function PrintPage() {
     );
   }
 
-  const sheetCount = Math.ceil(guests.length / 9);
+  const sheetCount = Math.ceil(guests.length / 12);
 
   return (
     <>
@@ -86,13 +86,15 @@ export default function PrintPage() {
         </div>
       </div>
 
-      {/* Grid — print */}
+      {/* Grid — print: groupes de 12 (3×4) pour garantir 1 groupe = 1 page A4 */}
       <div className="hidden print:block">
-        <div className="badge-grid-print">
-          {guests.map((guest, i) => (
-            <Badge key={guest.token} guest={guest} index={i} />
-          ))}
-        </div>
+        {Array.from({ length: Math.ceil(guests.length / 12) }, (_, p) => (
+          <div key={p} className="badge-grid-print">
+            {guests.slice(p * 12, p * 12 + 12).map((guest, j) => (
+              <Badge key={guest.token} guest={guest} index={p * 12 + j} />
+            ))}
+          </div>
+        ))}
       </div>
 
       <style>{`
@@ -123,6 +125,12 @@ export default function PrintPage() {
           border: 1px solid #C9A84C;
           -webkit-print-color-adjust: exact;
           print-color-adjust: exact;
+          break-after: page;
+          page-break-after: always;
+        }
+        .badge-grid-print:last-child {
+          break-after: auto;
+          page-break-after: auto;
         }
       `}</style>
     </>

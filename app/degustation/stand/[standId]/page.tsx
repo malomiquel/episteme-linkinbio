@@ -106,9 +106,9 @@ export default function StandPage({ params }: { params: Params }) {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(201,168,76,0.12)_0%,transparent_50%),radial-gradient(ellipse_at_80%_100%,rgba(140,58,68,0.2)_0%,transparent_50%)]" />
       </div>
 
-      <div className="relative z-10 min-h-dvh flex flex-col items-center px-5 py-8 font-(family-name:--font-inter)">
+      <div className="relative z-10 min-h-dvh flex flex-col items-center px-4 py-5 font-(family-name:--font-inter)">
         {/* Stand header */}
-        <div className="w-full max-w-sm mb-6 text-center">
+        <div className="w-full max-w-sm mb-4 text-center">
           <p className="text-xs text-gold/60 uppercase tracking-widest font-semibold mb-1">
             Scanner — Stand
           </p>
@@ -139,7 +139,7 @@ export default function StandPage({ params }: { params: Params }) {
 
         {/* Result: first visit */}
         {scanState.status === "ok" && (
-          <div className="w-full max-w-sm flex flex-col items-center gap-5 py-10">
+          <div className="w-full max-w-sm flex flex-col items-center gap-5 py-8">
             <div className="w-24 h-24 rounded-full bg-green-500/20 border-2 border-green-400/40 flex items-center justify-center">
               <span className="text-5xl">✅</span>
             </div>
@@ -160,7 +160,7 @@ export default function StandPage({ params }: { params: Params }) {
 
         {/* Result: already visited */}
         {scanState.status === "already" && (
-          <div className="w-full max-w-sm flex flex-col items-center gap-5 py-10">
+          <div className="w-full max-w-sm flex flex-col items-center gap-5 py-8">
             <div className="w-24 h-24 rounded-full bg-red-500/20 border-2 border-red-400/40 flex items-center justify-center">
               <span className="text-5xl">🚫</span>
             </div>
@@ -180,7 +180,7 @@ export default function StandPage({ params }: { params: Params }) {
 
         {/* Error */}
         {scanState.status === "error" && (
-          <div className="w-full max-w-sm flex flex-col items-center gap-5 py-10">
+          <div className="w-full max-w-sm flex flex-col items-center gap-5 py-8">
             <div className="w-24 h-24 rounded-full bg-yellow-500/20 border-2 border-yellow-400/40 flex items-center justify-center">
               <span className="text-5xl">⚠️</span>
             </div>
@@ -193,7 +193,7 @@ export default function StandPage({ params }: { params: Params }) {
                 setScanState({ status: "scanning" });
                 scannerRef.current?.resume();
               }}
-              className="px-6 py-2 rounded-xl bg-gold/20 border border-gold/30 text-gold text-sm font-semibold hover:bg-gold/30 transition-colors"
+              className="w-full max-w-xs py-3.5 rounded-xl bg-gold/20 border border-gold/30 text-gold text-sm font-semibold active:scale-[0.98] transition-transform"
             >
               Réessayer
             </button>

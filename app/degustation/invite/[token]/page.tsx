@@ -49,7 +49,6 @@ export default function InvitePage({ params }: { params: Params }) {
   }
 
   const remaining = STANDS.filter((s) => !visits.includes(s.id));
-  const visited = STANDS.filter((s) => visits.includes(s.id));
 
   return (
     <>
@@ -57,8 +56,8 @@ export default function InvitePage({ params }: { params: Params }) {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(201,168,76,0.12)_0%,transparent_50%),radial-gradient(ellipse_at_80%_100%,rgba(140,58,68,0.2)_0%,transparent_50%)]" />
       </div>
 
-      <div className="relative z-10 min-h-dvh flex flex-col items-center justify-center px-5 py-10 font-(family-name:--font-inter)">
-        <div className="w-full max-w-xs flex flex-col items-center gap-6">
+      <div className="relative z-10 min-h-dvh flex flex-col items-center justify-center px-4 py-6 font-(family-name:--font-inter)">
+        <div className="w-full max-w-sm flex flex-col items-center gap-5">
           {/* Header */}
           <div className="text-center">
             <p className="text-xs text-gold/60 uppercase tracking-widest font-semibold mb-1">
@@ -71,22 +70,22 @@ export default function InvitePage({ params }: { params: Params }) {
 
           {/* QR Code */}
           <div className="bg-white rounded-2xl p-5 shadow-lg">
-            <QRCode value={token} size={200} />
+            <QRCode value={token} size={220} />
           </div>
-          <p className="text-xs text-cream/30 font-mono">{token}</p>
+          <p className="text-xs text-cream/25 font-mono">{token}</p>
 
           {/* Progress */}
           <div className="w-full bg-dark-card/80 border border-cream/8 rounded-2xl p-4 backdrop-blur-sm">
             <p className="text-xs text-cream/40 uppercase tracking-widest font-semibold mb-3">
               Avancement — {visits.length}/{STANDS.length} stands
             </p>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-0.5">
               {STANDS.map((stand) => {
                 const done = visits.includes(stand.id);
                 return (
                   <div
                     key={stand.id}
-                    className={`flex items-center gap-3 text-sm ${done ? "text-cream/90" : "text-cream/30"}`}
+                    className={`flex items-center gap-3 py-2 text-sm ${done ? "text-cream/90" : "text-cream/30"}`}
                   >
                     <span className="text-base leading-none">{stand.emoji}</span>
                     <span className="flex-1">{stand.name}</span>

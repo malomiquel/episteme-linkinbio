@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useQueryState } from "nuqs";
 import { STANDS } from "../../../config/degustation";
 import type { Guest } from "../../api/degustation/guests/route";
 
@@ -15,6 +16,7 @@ export default function DegustationAdmin() {
   const [importing, setImporting] = useState(false);
   const [importResult, setImportResult] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [search, setSearch] = useQueryState("q", { defaultValue: "", shallow: true });
 
   useEffect(() => {
     fetch("/api/degustation/guests")
@@ -46,7 +48,6 @@ export default function DegustationAdmin() {
         setImportResult(
           `✅ ${result.added} ajouté${result.added > 1 ? "s" : ""}, ${result.updated} mis à jour — ${result.total} invités au total`
         );
-        // Reload data
         const fresh = await fetch("/api/degustation/guests").then((r) => r.json());
         setData(fresh);
       }
@@ -72,7 +73,7 @@ export default function DegustationAdmin() {
       ]),
     ];
     const csv = rows.map((r) => r.map((v) => `"${v}"`).join(";")).join("\n");
-    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" }); // BOM for Excel
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -107,6 +108,18 @@ export default function DegustationAdmin() {
   }
 
   const totalVisits = Object.values(data.visits).reduce((sum, v) => sum + v.length, 0);
+  const q = search.trim().toLowerCase();
+
+  const sortedGuests = [...data.guests]
+    .sort((a, b) => {
+      const lastA = (a.lastName || a.name.split(" ").pop() || "").toUpperCase();
+      const lastB = (b.lastName || b.name.split(" ").pop() || "").toUpperCase();
+      if (lastA !== lastB) return lastA.localeCompare(lastB, "fr");
+      const firstA = (a.firstName || a.name.split(" ")[0] || "").toUpperCase();
+      const firstB = (b.firstName || b.name.split(" ")[0] || "").toUpperCase();
+      return firstA.localeCompare(firstB, "fr");
+    })
+    .filter((g) => !q || g.name.toLowerCase().includes(q) || g.email.toLowerCase().includes(q));
 
   return (
     <>
@@ -114,7 +127,7 @@ export default function DegustationAdmin() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(201,168,76,0.12)_0%,transparent_50%),radial-gradient(ellipse_at_80%_100%,rgba(140,58,68,0.2)_0%,transparent_50%)]" />
       </div>
 
-      <div className="relative z-10 min-h-dvh flex flex-col items-center px-5 py-10 font-(family-name:--font-inter)">
+      <div className="relative z-10 min-h-dvh flex flex-col items-center px-4 py-8 font-(family-name:--font-inter)">
         <div className="w-full max-w-md">
           <a
             href="/admin"
@@ -132,7 +145,7 @@ export default function DegustationAdmin() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-3 mb-6">
+          <div className="grid grid-cols-3 gap-2 mb-6">
             <div className="bg-dark-card/80 border border-cream/8 rounded-xl p-3 text-center backdrop-blur-sm">
               <p className="text-2xl font-bold text-cream">{data.guests.length}</p>
               <p className="text-xs text-cream/35 mt-0.5">Invités</p>
@@ -154,9 +167,9 @@ export default function DegustationAdmin() {
           <div className="bg-dark-card/80 border border-cream/8 rounded-2xl p-4 backdrop-blur-sm mb-2">
             <p className="text-xs text-cream/40 mb-3">
               Exporte la liste des participants depuis HelloAsso (format CSV) et importe-la ici.
-              Les imports répétés préservent les tokens existants — seuls les nouveaux inscrits reçoivent un nouveau badge.
+              Les imports répétés préservent les tokens existants.
             </p>
-            <label className="flex items-center justify-center gap-2 w-full py-3 rounded-xl border border-dashed border-gold/30 text-gold text-sm font-semibold cursor-pointer hover:bg-gold/5 transition-colors">
+            <label className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl border border-dashed border-gold/30 text-gold text-sm font-semibold cursor-pointer active:bg-gold/10 transition-colors">
               {importing ? (
                 <>
                   <div className="w-4 h-4 border-2 border-gold/40 border-t-gold rounded-full animate-spin" />
@@ -191,18 +204,18 @@ export default function DegustationAdmin() {
 
           {/* Actions */}
           {data.guests.length > 0 && (
-            <div className="flex gap-2 mb-8 mt-4">
+            <div className="flex flex-col gap-2 mb-8 mt-4">
               <a
                 href="/admin/degustation/print"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 text-center py-2.5 rounded-xl bg-gold/20 border border-gold/30 text-gold text-sm font-semibold hover:bg-gold/30 transition-colors"
+                className="w-full text-center py-3 rounded-xl bg-gold/20 border border-gold/30 text-gold text-sm font-semibold active:bg-gold/30 transition-colors"
               >
                 🖨️ Imprimer les badges
               </a>
               <button
                 onClick={exportCSV}
-                className="flex-1 py-2.5 rounded-xl bg-cream/5 border border-cream/15 text-cream/70 text-sm font-semibold hover:bg-cream/10 transition-colors"
+                className="w-full py-3 rounded-xl bg-cream/5 border border-cream/15 text-cream/70 text-sm font-semibold active:bg-cream/10 transition-colors"
               >
                 📥 Exporter CSV
               </button>
@@ -220,7 +233,7 @@ export default function DegustationAdmin() {
                 href={`/degustation/stand/${stand.id}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center gap-3 bg-dark-card/80 border border-cream/8 rounded-xl px-4 py-3 backdrop-blur-sm hover:border-gold/30 transition-all"
+                className="group flex items-center gap-3 bg-dark-card/80 border border-cream/8 rounded-xl px-4 py-3.5 backdrop-blur-sm active:border-gold/30 transition-all"
               >
                 <span className="text-xl">{stand.emoji}</span>
                 <div className="flex-1 min-w-0">
@@ -239,27 +252,50 @@ export default function DegustationAdmin() {
           {/* Guest list */}
           {data.guests.length > 0 && (
             <>
+              <div className="relative mb-3">
+                <input
+                  type="search"
+                  placeholder="Rechercher un invité…"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full bg-dark-card/80 border border-cream/10 rounded-xl px-4 py-3 text-sm text-cream/80 placeholder:text-cream/25 focus:outline-none focus:border-gold/40 backdrop-blur-sm"
+                />
+                {search && (
+                  <button
+                    onClick={() => setSearch("")}
+                    className="absolute right-0 top-0 h-full px-4 text-cream/25 hover:text-cream/60 transition-colors"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
               <div className="flex items-center justify-between mb-3 px-1">
                 <p className="text-xs text-cream/25 uppercase tracking-widest font-semibold">
-                  Invités ({data.guests.length})
+                  Invités ({q ? `${sortedGuests.length}/` : ""}{data.guests.length})
                 </p>
                 <button
                   onClick={resetAll}
-                  className="text-xs text-red-400/60 hover:text-red-400 transition-colors"
+                  className="text-xs text-red-400/60 hover:text-red-400 transition-colors py-1 px-2"
                 >
                   Tout supprimer
                 </button>
               </div>
 
               <div className="flex flex-col gap-2">
-                {data.guests.map((guest, i) => {
+                {sortedGuests.map((guest, i) => {
                   const visitedStands = data.visits[guest.token] ?? [];
                   return (
                     <div
                       key={guest.token}
-                      className="bg-dark-card/80 border border-cream/8 rounded-xl px-4 py-3 backdrop-blur-sm"
+                      className="relative bg-dark-card/80 border border-cream/8 rounded-xl backdrop-blur-sm"
                     >
-                      <div className="flex items-center gap-3">
+                      <a
+                        href={`/degustation/invite/${guest.token}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 px-4 py-3 pr-12"
+                      >
                         <span className="text-xs text-cream/25 font-mono w-8 shrink-0">
                           #{String(i + 1).padStart(3, "0")}
                         </span>
@@ -281,23 +317,15 @@ export default function DegustationAdmin() {
                             )}
                           </div>
                         </div>
-                        <a
-                          href={`/degustation/invite/${guest.token}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-cream/15 text-sm hover:text-gold/60 transition-colors"
-                          title="Ouvrir le badge"
-                        >
-                          ↗
-                        </a>
-                        <button
-                          onClick={() => deleteGuest(guest.token)}
-                          className="text-red-400/30 text-sm hover:text-red-400 transition-colors"
-                          title="Supprimer"
-                        >
-                          ✕
-                        </button>
-                      </div>
+                        <span className="text-cream/15 text-sm">↗</span>
+                      </a>
+                      <button
+                        onClick={() => deleteGuest(guest.token)}
+                        className="absolute right-0 top-0 h-full w-12 flex items-center justify-center text-red-400/20 hover:text-red-400 active:text-red-400 transition-colors"
+                        title="Supprimer"
+                      >
+                        ✕
+                      </button>
                     </div>
                   );
                 })}
