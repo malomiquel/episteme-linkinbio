@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useQueryState } from "nuqs";
 import { STANDS } from "../../../config/degustation";
 import type { Guest } from "../../api/degustation/guests/route";
@@ -10,7 +10,15 @@ interface DegustationData {
   visits: Record<string, string[]>;
 }
 
-export default function DegustationAdmin() {
+export default function DegustationPage() {
+  return (
+    <Suspense>
+      <DegustationAdmin />
+    </Suspense>
+  );
+}
+
+function DegustationAdmin() {
   const [data, setData] = useState<DegustationData>({ guests: [], visits: {} });
   const [loading, setLoading] = useState(true);
   const [importing, setImporting] = useState(false);
