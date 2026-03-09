@@ -21,57 +21,90 @@ export default function PrintPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p className="text-gray-500 text-sm">Chargement des badges...</p>
+      <div
+        style={{ background: "#1a0810", minHeight: "100vh" }}
+        className="flex items-center justify-center"
+      >
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-6 h-6 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: "#C9A84C", borderTopColor: "transparent" }} />
+          <p style={{ color: "rgba(245,240,232,0.4)", fontSize: 13 }}>Chargement des badges...</p>
+        </div>
       </div>
     );
   }
 
   if (guests.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-        <p className="text-gray-500 text-sm">Aucun invité. Importe d&apos;abord un CSV HelloAsso.</p>
-        <a href="/admin/degustation" className="text-sm text-blue-600 underline">
+      <div
+        style={{ background: "#1a0810", minHeight: "100vh" }}
+        className="flex flex-col items-center justify-center gap-4"
+      >
+        <p style={{ color: "rgba(245,240,232,0.4)", fontSize: 13 }}>
+          Aucun invité. Importe d&apos;abord un CSV HelloAsso.
+        </p>
+        <a href="/admin/degustation" style={{ color: "#C9A84C", fontSize: 13 }}>
           ← Retour admin
         </a>
       </div>
     );
   }
 
+  const sheetCount = Math.ceil(guests.length / 9);
+
   return (
     <>
-      {/* Print controls — hidden when printing */}
-      <div className="print:hidden flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="flex items-center gap-4">
-          <a href="/admin/degustation" className="text-sm text-gray-500 hover:text-gray-900">
-            ← Retour
-          </a>
-          <span className="text-sm font-medium text-gray-700">
-            {guests.length} badges — {Math.ceil(guests.length / 9)} feuilles A4
-          </span>
+      {/* Controls — screen only */}
+      <div className="print:hidden" style={{ background: "#3B1520", borderBottom: "1px solid rgba(201,168,76,0.2)", position: "sticky", top: 0, zIndex: 10 }}>
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: "12px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+            <a
+              href="/admin/degustation"
+              style={{ color: "rgba(245,240,232,0.5)", fontSize: 13, textDecoration: "none" }}
+            >
+              ← Retour
+            </a>
+            <span style={{ color: "rgba(245,240,232,0.3)", fontSize: 13 }}>
+              {guests.length} badges · {sheetCount} feuille{sheetCount > 1 ? "s" : ""} A4
+            </span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ color: "rgba(201,168,76,0.5)", fontSize: 11 }}>
+              Activer &laquo;&nbsp;Graphismes d&apos;arrière-plan&nbsp;&raquo; dans le dialogue d&apos;impression
+            </span>
+            <button
+              onClick={() => window.print()}
+              style={{
+                background: "#C9A84C",
+                color: "#3B1520",
+                border: "none",
+                borderRadius: 8,
+                padding: "8px 18px",
+                fontSize: 13,
+                fontWeight: 700,
+                cursor: "pointer",
+                fontFamily: "var(--font-inter), system-ui",
+              }}
+            >
+              Imprimer
+            </button>
+          </div>
         </div>
-        <button
-          onClick={() => window.print()}
-          className="px-5 py-2 bg-black text-white text-sm font-semibold rounded-lg hover:bg-gray-800 transition-colors"
-        >
-          🖨️ Imprimer
-        </button>
       </div>
 
-      {/* Badge grid */}
-      <div className="bg-white p-4 print:p-0">
+      {/* Page background — screen only */}
+      <div className="print:hidden" style={{ background: "#1a0810", padding: "24px 16px", minHeight: "calc(100vh - 53px)" }}>
         <div className="badge-grid">
           {guests.map((guest, i) => (
-            <div key={guest.token} className="badge">
-              <div className="badge-number">#{String(i + 1).padStart(3, "0")}</div>
-              <div className="badge-qr">
-                <QRCode value={guest.token} size={130} />
-              </div>
-              <div className="badge-name">
-                {guest.name || <span style={{ color: "#999" }}>Invité #{i + 1}</span>}
-              </div>
-              <div className="badge-event">Dégustation Episteme</div>
-            </div>
+            <Badge key={guest.token} guest={guest} index={i} />
+          ))}
+        </div>
+      </div>
+
+      {/* Print-only grid */}
+      <div className="hidden print:block">
+        <div className="badge-grid">
+          {guests.map((guest, i) => (
+            <Badge key={guest.token} guest={guest} index={i} />
           ))}
         </div>
       </div>
@@ -79,76 +112,160 @@ export default function PrintPage() {
       <style>{`
         @media print {
           @page {
-            size: A4;
-            margin: 8mm;
+            size: A4 portrait;
+            margin: 10mm;
           }
           body {
-            background: white;
+            background: white !important;
           }
         }
 
         .badge-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 4mm;
+          gap: 5mm;
+          max-width: 860px;
+          margin: 0 auto;
         }
+      `}</style>
+    </>
+  );
+}
 
-        .badge {
+function Badge({ guest, index }: { guest: Guest; index: number }) {
+  return (
+    <>
+      <div className="badge-card">
+        {/* Header */}
+        <div className="badge-header">
+          <p className="badge-title">Dégustation · Episteme</p>
+          <div className="badge-divider" />
+        </div>
+
+        {/* QR */}
+        <div className="badge-body">
+          <div className="badge-qr">
+            <QRCode value={guest.token} size={120} />
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="badge-footer">
+          <div className="badge-divider" />
+          <p className="badge-name">
+            {guest.name || `Invité #${String(index + 1).padStart(3, "0")}`}
+          </p>
+          <div className="badge-meta">
+            <span className="badge-number">#{String(index + 1).padStart(3, "0")}</span>
+            <span className="badge-wine">🍷</span>
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        .badge-card {
+          background: #3B1520;
+          border: 1.5px solid #C9A84C;
+          border-radius: 8px;
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 3px;
-          padding: 6mm 4mm 4mm;
-          border: 1px solid #ddd;
-          border-radius: 6px;
-          background: white;
           break-inside: avoid;
           page-break-inside: avoid;
+          overflow: hidden;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
 
-        .badge-number {
-          font-size: 10px;
-          color: #aaa;
-          font-family: monospace;
-          align-self: flex-start;
+        .badge-header {
+          width: 100%;
+          padding: 5mm 4mm 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 2.5mm;
+        }
+
+        .badge-title {
+          font-family: var(--font-playfair), Georgia, serif;
+          font-size: 7.5px;
+          font-weight: 700;
+          color: #C9A84C;
+          letter-spacing: 1.8px;
+          text-transform: uppercase;
+          text-align: center;
           line-height: 1;
         }
 
+        .badge-divider {
+          width: 100%;
+          height: 0.5px;
+          background: linear-gradient(to right, transparent, #C9A84C, transparent);
+          opacity: 0.6;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+
+        .badge-body {
+          padding: 4mm 4mm 3mm;
+          display: flex;
+          justify-content: center;
+        }
+
         .badge-qr {
-          padding: 4px;
-          background: white;
+          background: #FFFFFF;
+          padding: 3mm;
+          border-radius: 5px;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+
+        .badge-footer {
+          width: 100%;
+          padding: 0 4mm 4mm;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 2mm;
         }
 
         .badge-name {
-          font-size: 11px;
+          font-family: var(--font-playfair), Georgia, serif;
+          font-size: 11.5px;
           font-weight: 600;
-          color: #111;
+          color: #F5F0E8;
           text-align: center;
-          font-family: sans-serif;
           line-height: 1.3;
           max-width: 100%;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
-          width: 100%;
-          padding: 0 4px;
+          padding: 0 3mm;
         }
 
-        .badge-event {
-          font-size: 8px;
-          color: #888;
-          font-family: sans-serif;
+        .badge-meta {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0 1mm;
+        }
+
+        .badge-number {
+          font-family: var(--font-inter), system-ui, sans-serif;
+          font-size: 7.5px;
+          color: rgba(201, 168, 76, 0.5);
+          font-variant-numeric: tabular-nums;
           letter-spacing: 0.5px;
-          text-transform: uppercase;
+        }
+
+        .badge-wine {
+          font-size: 9px;
         }
 
         @media screen {
-          .badge-grid {
-            max-width: 780px;
-            margin: 0 auto;
-          }
-          .badge {
-            min-height: 180px;
+          .badge-card {
+            min-height: 200px;
           }
         }
       `}</style>
