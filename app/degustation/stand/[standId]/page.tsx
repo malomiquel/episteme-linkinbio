@@ -18,7 +18,11 @@ export default function StandPage({ params }: { params: Params }) {
 
   const [scanState, setScanState] = useState<ScanState>({ status: "scanning" });
   const scannerRef = useRef<{ pause: () => void; resume: () => void; stop: () => Promise<void> } | null>(null);
-  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function resumeScanner() {
+    setScanState({ status: "scanning" });
+    scannerRef.current?.resume();
+  }
 
   const handleScan = useCallback(
     async (token: string) => {
@@ -49,11 +53,6 @@ export default function StandPage({ params }: { params: Params }) {
       } catch {
         setScanState({ status: "error", message: "Pas de connexion" });
       }
-
-      resumeTimerRef.current = setTimeout(() => {
-        setScanState({ status: "scanning" });
-        scannerRef.current?.resume();
-      }, 3500);
     },
     [standId, scanState.status]
   );
@@ -81,7 +80,6 @@ export default function StandPage({ params }: { params: Params }) {
 
     return () => {
       stopped = true;
-      if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
       scannerRef.current?.stop().catch(() => {});
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -91,9 +89,7 @@ export default function StandPage({ params }: { params: Params }) {
       <div className="fixed inset-0 bg-dark flex flex-col items-center justify-center gap-4 px-6 text-center">
         <span className="text-4xl">❌</span>
         <p className="text-cream/60 text-sm">Stand inconnu : {standId}</p>
-        <a href="/admin/degustation" className="text-gold/60 text-sm underline">
-          Retour admin
-        </a>
+        <a href="/admin/degustation" className="text-gold/60 text-sm underline">Retour admin</a>
       </div>
     );
   }
@@ -109,19 +105,15 @@ export default function StandPage({ params }: { params: Params }) {
       <div className="relative z-10 min-h-dvh flex flex-col items-center px-4 py-5 font-(family-name:--font-inter)">
         {/* Stand header */}
         <div className="w-full max-w-sm mb-4 text-center">
-          <p className="text-xs text-gold/60 uppercase tracking-widest font-semibold mb-1">
-            Scanner — Stand
-          </p>
+          <p className="text-xs text-gold/60 uppercase tracking-widest font-semibold mb-1">Scanner — Stand</p>
           <h1 className="font-(family-name:--font-playfair) text-2xl font-bold text-cream flex items-center justify-center gap-2">
             <span>{stand.emoji}</span>
             <span>{stand.name}</span>
           </h1>
-          {stand.description && (
-            <p className="text-sm text-cream/40 mt-1">{stand.description}</p>
-          )}
+          {stand.description && <p className="text-sm text-cream/40 mt-1">{stand.description}</p>}
         </div>
 
-        {/* QR Reader — always rendered in DOM */}
+        {/* QR Reader */}
         <div
           className="w-full max-w-sm rounded-2xl overflow-hidden border border-cream/10"
           style={{ display: isResult ? "none" : "block" }}
@@ -151,10 +143,15 @@ export default function StandPage({ params }: { params: Params }) {
                 Première visite au stand <strong className="text-cream/90">{scanState.standName}</strong>
               </p>
               <p className="text-cream/30 text-xs mt-3">
-                {scanState.totalVisits} stand{scanState.totalVisits > 1 ? "s" : ""} visité{scanState.totalVisits > 1 ? "s" : ""} au total
+                {scanState.totalVisits} stand{scanState.totalVisits > 1 ? "s" : ""} visité{scanState.totalVisits > 1 ? "s" : ""}
               </p>
             </div>
-            <p className="text-cream/20 text-xs">Reprise dans 3 secondes...</p>
+            <button
+              onClick={resumeScanner}
+              className="w-full py-4 rounded-2xl bg-green-500/15 border border-green-400/30 text-green-400 text-base font-semibold active:scale-[0.98] transition-transform"
+            >
+              Scanner le suivant →
+            </button>
           </div>
         )}
 
@@ -174,7 +171,12 @@ export default function StandPage({ params }: { params: Params }) {
                 <strong className="text-cream/90">{scanState.standName}</strong>
               </p>
             </div>
-            <p className="text-cream/20 text-xs">Reprise dans 3 secondes...</p>
+            <button
+              onClick={resumeScanner}
+              className="w-full py-4 rounded-2xl bg-cream/5 border border-cream/15 text-cream/70 text-base font-semibold active:scale-[0.98] transition-transform"
+            >
+              Scanner le suivant →
+            </button>
           </div>
         )}
 
@@ -189,13 +191,10 @@ export default function StandPage({ params }: { params: Params }) {
               <p className="text-cream/60 text-sm mt-1">{scanState.message}</p>
             </div>
             <button
-              onClick={() => {
-                setScanState({ status: "scanning" });
-                scannerRef.current?.resume();
-              }}
-              className="w-full max-w-xs py-3.5 rounded-xl bg-gold/20 border border-gold/30 text-gold text-sm font-semibold active:scale-[0.98] transition-transform"
+              onClick={resumeScanner}
+              className="w-full py-4 rounded-2xl bg-gold/20 border border-gold/30 text-gold text-base font-semibold active:scale-[0.98] transition-transform"
             >
-              Réessayer
+              Réessayer →
             </button>
           </div>
         )}

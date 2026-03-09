@@ -113,10 +113,10 @@ function DegustationAdmin() {
     setData({ guests: [], visits: {} });
   }
 
-  const totalVisits = Object.values(data.visits).reduce((sum, v) => sum + v.length, 0);
+  const totalVisits = Object.values(data.visits ?? {}).reduce((sum, v) => sum + v.length, 0);
   const q = search.trim().toLowerCase();
 
-  const sortedGuests = [...data.guests]
+  const sortedGuests = [...(data.guests ?? [])]
     .sort((a, b) => {
       const lastA = (a.lastName || a.name.split(" ").pop() || "").toUpperCase();
       const lastB = (b.lastName || b.name.split(" ").pop() || "").toUpperCase();
@@ -153,7 +153,7 @@ function DegustationAdmin() {
           {/* Stats */}
           <div className="grid grid-cols-3 gap-2 mb-6">
             <div className="bg-dark-card/80 border border-cream/8 rounded-xl p-3 text-center backdrop-blur-sm">
-              <p className="text-2xl font-bold text-cream">{data.guests.length}</p>
+              <p className="text-2xl font-bold text-cream">{(data.guests ?? []).length}</p>
               <p className="text-xs text-cream/35 mt-0.5">Invités</p>
             </div>
             <div className="bg-dark-card/80 border border-cream/8 rounded-xl p-3 text-center backdrop-blur-sm">
@@ -290,7 +290,7 @@ function DegustationAdmin() {
 
               <div className="flex flex-col gap-2">
                 {sortedGuests.map((guest, i) => {
-                  const visitedStands = data.visits[guest.token] ?? [];
+                  const visitedStands = (data.visits ?? {})[guest.token] ?? [];
                   return (
                     <div
                       key={guest.token}

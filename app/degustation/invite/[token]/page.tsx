@@ -1,10 +1,127 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import QRCode from "react-qr-code";
 import { STANDS } from "../../../../config/degustation";
 
 type Params = Promise<{ token: string }>;
+
+function WineGlass({ filled, total }: { filled: number; total: number }) {
+  const pct = total === 0 ? 0 : filled / total;
+  const complete = filled === total;
+  const wineColor = complete ? "#C9A84C" : "#7B2235";
+  const wineLight = complete ? "#E8C55A" : "#A63348";
+
+  // viewBox 0 0 100 160
+  // Realistic wine glass: curved bowl via bezier, thin stem, wide base
+  // Bowl: top opening at y=8 (x: 18..82), curves inward to stem join at y=100 (x: 44..56)
+  // The bowl path uses cubic beziers for a realistic curved shape
+
+  const bowlPath = "M18,8 C18,8 10,55 16,80 C22,100 44,108 44,108 L56,108 C56,108 78,100 84,80 C90,55 82,8 82,8 Z";
+
+  // Fill clip: we clip the wine rectangle to the bowl shape
+  // Fill level from bottom (y=108) up by pct of bowl height (108-8=100)
+  const bowlH = 100;
+  const fillTop = 108 - pct * bowlH;
+
+  return (
+    <svg viewBox="0 0 100 160" width="110" height="176" style={{ filter: "drop-shadow(0 8px 24px rgba(140,58,68,0.35))" }}>
+      <defs>
+        <clipPath id="bowl-clip">
+          <path d={bowlPath} />
+        </clipPath>
+        <linearGradient id="wine-grad" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor={wineColor} stopOpacity="0.95" />
+          <stop offset="50%" stopColor={wineLight} stopOpacity="0.85" />
+          <stop offset="100%" stopColor={wineColor} stopOpacity="0.95" />
+        </linearGradient>
+        <linearGradient id="glass-shine" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="rgba(245,240,232,0.18)" />
+          <stop offset="40%" stopColor="rgba(245,240,232,0.06)" />
+          <stop offset="100%" stopColor="rgba(245,240,232,0.02)" />
+        </linearGradient>
+      </defs>
+
+      {/* Bowl fill (wine) */}
+      {pct > 0 && (
+        <rect
+          x="0" y={fillTop} width="100" height={108 - fillTop + 2}
+          fill="url(#wine-grad)"
+          clipPath="url(#bowl-clip)"
+          style={{ transition: "y 0.9s cubic-bezier(0.34,1.56,0.64,1), height 0.9s cubic-bezier(0.34,1.56,0.64,1)" }}
+        />
+      )}
+
+      {/* Wave on top of wine */}
+      {pct > 0 && pct < 1 && (
+        <g clipPath="url(#bowl-clip)" style={{ transition: "transform 0.9s cubic-bezier(0.34,1.56,0.64,1)" }}>
+          <path
+            d={`M0,${fillTop} Q25,${fillTop - 4} 50,${fillTop} Q75,${fillTop + 4} 100,${fillTop} L100,${fillTop + 6} Q75,${fillTop + 10} 50,${fillTop + 6} Q25,${fillTop + 2} 0,${fillTop + 6} Z`}
+            fill={wineLight}
+            opacity="0.5"
+          >
+            <animateTransform attributeName="transform" type="translate" values="0,0;-50,0;0,0" dur="3s" repeatCount="indefinite" />
+          </path>
+        </g>
+      )}
+
+      {/* Bowl glass outline */}
+      <path
+        d={bowlPath}
+        fill="rgba(245,240,232,0.03)"
+        stroke="rgba(245,240,232,0.3)"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+
+      {/* Left shine streak */}
+      <path
+        d="M26,16 C24,30 22,55 24,75"
+        fill="none"
+        stroke="rgba(245,240,232,0.18)"
+        strokeWidth="4"
+        strokeLinecap="round"
+      />
+      {/* Secondary shine */}
+      <path
+        d="M34,12 C33,22 32,38 33,52"
+        fill="none"
+        stroke="rgba(245,240,232,0.08)"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+
+      {/* Stem */}
+      <path
+        d="M44,108 C44,108 46,118 48,128 C50,138 52,128 56,108"
+        fill="rgba(245,240,232,0.12)"
+        stroke="rgba(245,240,232,0.25)"
+        strokeWidth="1"
+      />
+
+      {/* Base */}
+      <ellipse cx="50" cy="148" rx="22" ry="5" fill="rgba(245,240,232,0.12)" stroke="rgba(245,240,232,0.25)" strokeWidth="1" />
+
+      {/* Bubbles when complete */}
+      {complete && (
+        <>
+          <circle cx="40" cy={fillTop + 10} r="2.5" fill="rgba(201,168,76,0.55)">
+            <animate attributeName="cy" values={`${fillTop + 10};${fillTop - 20}`} dur="1.8s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.6;0" dur="1.8s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="52" cy={fillTop + 20} r="1.8" fill="rgba(201,168,76,0.4)">
+            <animate attributeName="cy" values={`${fillTop + 20};${fillTop - 10}`} dur="2.3s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.5;0" dur="2.3s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="46" cy={fillTop + 30} r="1.2" fill="rgba(201,168,76,0.3)">
+            <animate attributeName="cy" values={`${fillTop + 30};${fillTop}`} dur="1.5s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.4;0" dur="1.5s" repeatCount="indefinite" />
+          </circle>
+        </>
+      )}
+    </svg>
+  );
+}
 
 export default function InvitePage({ params }: { params: Params }) {
   const { token } = use(params);
@@ -12,24 +129,38 @@ export default function InvitePage({ params }: { params: Params }) {
   const [guestName, setGuestName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [invalid, setInvalid] = useState(false);
+  const [newlyUnlocked, setNewlyUnlocked] = useState<string | null>(null);
+  const prevVisitsRef = useRef<string[]>([]);
+
+  async function fetchVisits() {
+    const r = await fetch(`/api/degustation/visit?token=${token}`);
+    if (r.status === 404) { setInvalid(true); return; }
+    const data = await r.json();
+    const newVisits: string[] = data.visits ?? [];
+
+    // Detect newly unlocked stand
+    const added = newVisits.find((id) => !prevVisitsRef.current.includes(id));
+    if (added) setNewlyUnlocked(added);
+    prevVisitsRef.current = newVisits;
+
+    setVisits(newVisits);
+    setGuestName(data.name ?? null);
+  }
 
   useEffect(() => {
-    fetch(`/api/degustation/visit?token=${token}`)
-      .then((r) => {
-        if (r.status === 404) {
-          setInvalid(true);
-          return null;
-        }
-        return r.json();
-      })
-      .then((data) => {
-        if (data) {
-          setVisits(data.visits ?? []);
-          setGuestName(data.name ?? null);
-        }
-      })
-      .finally(() => setLoading(false));
-  }, [token]);
+    fetchVisits().finally(() => setLoading(false));
+
+    // Poll every 4s for real-time updates
+    const interval = setInterval(fetchVisits, 4000);
+    return () => clearInterval(interval);
+  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Clear "newly unlocked" highlight after 3s
+  useEffect(() => {
+    if (!newlyUnlocked) return;
+    const t = setTimeout(() => setNewlyUnlocked(null), 3000);
+    return () => clearTimeout(t);
+  }, [newlyUnlocked]);
 
   if (loading) {
     return (
@@ -48,7 +179,7 @@ export default function InvitePage({ params }: { params: Params }) {
     );
   }
 
-  const remaining = STANDS.filter((s) => !visits.includes(s.id));
+  const allDone = visits.length === STANDS.length;
 
   return (
     <>
@@ -56,53 +187,82 @@ export default function InvitePage({ params }: { params: Params }) {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(201,168,76,0.12)_0%,transparent_50%),radial-gradient(ellipse_at_80%_100%,rgba(140,58,68,0.2)_0%,transparent_50%)]" />
       </div>
 
-      <div className="relative z-10 min-h-dvh flex flex-col items-center justify-center px-4 py-6 font-(family-name:--font-inter)">
-        <div className="w-full max-w-sm flex flex-col items-center gap-5">
+      <div className="relative z-10 min-h-dvh flex flex-col items-center px-4 py-8 font-(family-name:--font-inter)">
+        <div className="w-full max-w-sm flex flex-col items-center gap-6">
+
           {/* Header */}
           <div className="text-center">
-            <p className="text-xs text-gold/60 uppercase tracking-widest font-semibold mb-1">
-              Dégustation Episteme
+            <p className="text-xs text-gold/50 uppercase tracking-widest font-semibold mb-1">
+              Episteme · Dégustation
             </p>
-            <h1 className="font-(family-name:--font-playfair) text-2xl font-bold text-cream">
-              {guestName || "Mon badge"}
+            <h1 className="font-(family-name:--font-playfair) text-3xl font-bold text-cream">
+              Transmission II
             </h1>
+            {guestName && (
+              <p className="text-sm text-cream/50 mt-1">{guestName}</p>
+            )}
           </div>
 
           {/* QR Code */}
-          <div className="bg-white rounded-2xl p-5 shadow-lg">
-            <QRCode value={token} size={220} />
+          <div className="bg-white rounded-2xl p-4 shadow-lg">
+            <QRCode value={token} size={200} />
           </div>
-          <p className="text-xs text-cream/25 font-mono">{token}</p>
 
-          {/* Progress */}
-          <div className="w-full bg-dark-card/80 border border-cream/8 rounded-2xl p-4 backdrop-blur-sm">
-            <p className="text-xs text-cream/40 uppercase tracking-widest font-semibold mb-3">
-              Avancement — {visits.length}/{STANDS.length} stands
-            </p>
-            <div className="flex flex-col gap-0.5">
+          {/* Progress — wine glass + stands */}
+          <div className="w-full bg-dark-card/60 border border-cream/8 rounded-2xl p-5 backdrop-blur-sm">
+
+            {/* Glass + counter */}
+            <div className="flex items-center gap-5 mb-5">
+              <WineGlass filled={visits.length} total={STANDS.length} />
+              <div className="flex flex-col gap-1">
+                <p className="font-(family-name:--font-playfair) text-5xl font-bold text-cream leading-none">
+                  {visits.length}<span className="text-2xl text-cream/30">/{STANDS.length}</span>
+                </p>
+                <p className="text-xs text-cream/40 uppercase tracking-widest">
+                  {allDone ? "Complété 🎉" : "stands visités"}
+                </p>
+                {/* Progress bar */}
+                <div className="w-full h-1.5 bg-cream/10 rounded-full mt-2 overflow-hidden" style={{ width: 140 }}>
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${(visits.length / STANDS.length) * 100}%`,
+                      background: allDone ? "#C9A84C" : "#8C3A44",
+                      transition: "width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Stands list */}
+            <div className="flex flex-col divide-y divide-cream/5">
               {STANDS.map((stand) => {
                 const done = visits.includes(stand.id);
+                const isNew = newlyUnlocked === stand.id;
                 return (
                   <div
                     key={stand.id}
-                    className={`flex items-center gap-3 py-2 text-sm ${done ? "text-cream/90" : "text-cream/30"}`}
+                    className={`flex items-center gap-3 py-2.5 text-sm transition-all duration-500 ${
+                      done ? "text-cream/90" : "text-cream/25"
+                    } ${isNew ? "scale-[1.02]" : ""}`}
                   >
-                    <span className="text-base leading-none">{stand.emoji}</span>
-                    <span className="flex-1">{stand.name}</span>
-                    {done && <span className="text-green-400 text-xs">✓</span>}
+                    <span className={`text-lg leading-none transition-all duration-500 ${done ? "opacity-100" : "opacity-30 grayscale"}`}>
+                      {stand.emoji}
+                    </span>
+                    <span className="flex-1 font-medium">{stand.name}</span>
+                    {done && (
+                      <span className={`text-xs font-semibold transition-all duration-300 ${isNew ? "text-gold scale-110" : "text-green-400/80"}`}>
+                        {isNew ? "✨" : "✓"}
+                      </span>
+                    )}
                   </div>
                 );
               })}
             </div>
           </div>
 
-          {remaining.length === 0 && (
-            <div className="text-center bg-gold/10 border border-gold/30 rounded-2xl p-4 w-full">
-              <p className="text-gold text-sm font-semibold">
-                🎉 Tous les stands visités !
-              </p>
-            </div>
-          )}
+          <p className="text-xs text-cream/15 font-mono">{token}</p>
         </div>
       </div>
     </>

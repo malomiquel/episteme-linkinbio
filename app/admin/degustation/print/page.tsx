@@ -153,7 +153,7 @@ function Badge({ guest, index }: { guest: Guest; index: number }) {
         {/* QR */}
         <div className="badge-body">
           <div className="badge-qr">
-            <QRCode value={guest.token} size={118} />
+            <QRCode value={guest.token} size={116} />
           </div>
         </div>
 
@@ -208,7 +208,7 @@ function Badge({ guest, index }: { guest: Guest; index: number }) {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 2.5mm;
+          gap: 2mm;
         }
 
         .badge-title {
@@ -231,14 +231,14 @@ function Badge({ guest, index }: { guest: Guest; index: number }) {
         }
 
         .badge-body {
-          padding: 3.5mm 4mm 3mm;
+          padding: 4mm 4mm 3mm;
           display: flex;
           justify-content: center;
         }
 
         .badge-qr {
           background: #FFFFFF;
-          padding: 2.5mm;
+          padding: 2mm;
           border-radius: 0;
           -webkit-print-color-adjust: exact;
           print-color-adjust: exact;
@@ -246,7 +246,7 @@ function Badge({ guest, index }: { guest: Guest; index: number }) {
 
         .badge-footer {
           width: 100%;
-          padding: 0 4mm 3.5mm;
+          padding: 0 4mm 4mm;
           display: flex;
           flex-direction: column;
           align-items: center;
