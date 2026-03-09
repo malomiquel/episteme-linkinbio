@@ -105,13 +105,11 @@ function DegustationAdmin() {
 
   async function resetAll() {
     if (!confirm("Supprimer tous les invités et les visites ?")) return;
-    for (const guest of data.guests) {
-      await fetch("/api/degustation/guests", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: guest.token }),
-      });
-    }
+    await fetch("/api/degustation/guests", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ resetAll: true }),
+    });
     setData({ guests: [], visits: {} });
   }
 
