@@ -5,8 +5,18 @@ import { join } from "path";
 const REDIS_KEY = "degustation";
 const FILE = join(process.cwd(), "data", "degustation.json");
 
-interface DegustationData {
-  guests: string[];
+export interface Guest {
+  token: string;
+  ticketId: string;
+  name: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  ticketType: string;
+}
+
+export interface DegustationData {
+  guests: Guest[];
   visits: Record<string, string[]>;
 }
 
@@ -53,27 +63,29 @@ export async function GET() {
   return NextResponse.json(data);
 }
 
+// Manual generation (fallback when no HelloAsso CSV)
 export async function POST(request: Request) {
   const { count = 1 } = await request.json();
   const data = await readData();
 
-  const newTokens: string[] = [];
+  const newGuests: Guest[] = [];
   for (let i = 0; i < count; i++) {
     const token = crypto.randomUUID().replace(/-/g, "").slice(0, 12);
-    newTokens.push(token);
-    data.guests.push(token);
+    const guest: Guest = { token, ticketId: token, name: "", firstName: "", lastName: "", email: "", ticketType: "" };
+    newGuests.push(guest);
+    data.guests.push(guest);
     data.visits[token] = [];
   }
 
   await writeData(data);
-  return NextResponse.json({ ok: true, tokens: newTokens });
+  return NextResponse.json({ ok: true, tokens: newGuests.map((g) => g.token) });
 }
 
 export async function DELETE(request: Request) {
   const { token } = await request.json();
   const data = await readData();
 
-  data.guests = data.guests.filter((t) => t !== token);
+  data.guests = data.guests.filter((g) => g.token !== token);
   delete data.visits[token];
 
   await writeData(data);
