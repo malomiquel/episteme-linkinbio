@@ -91,16 +91,17 @@ function WineGlass({ filled, total }: { filled: number; total: number }) {
         strokeLinecap="round"
       />
 
-      {/* Stem */}
+      {/* Stem — connects flush to bowl bottom (y=108, x=44..56) */}
       <path
-        d="M44,108 C44,108 46,118 48,128 C50,138 52,128 56,108"
+        d="M46,108 L47,142 L53,142 L54,108 Z"
         fill="rgba(245,240,232,0.12)"
-        stroke="rgba(245,240,232,0.25)"
+        stroke="rgba(245,240,232,0.22)"
         strokeWidth="1"
+        strokeLinejoin="round"
       />
 
       {/* Base */}
-      <ellipse cx="50" cy="148" rx="22" ry="5" fill="rgba(245,240,232,0.12)" stroke="rgba(245,240,232,0.25)" strokeWidth="1" />
+      <ellipse cx="50" cy="145" rx="22" ry="5" fill="rgba(245,240,232,0.14)" stroke="rgba(245,240,232,0.28)" strokeWidth="1" />
 
       {/* Bubbles when complete */}
       {complete && (
