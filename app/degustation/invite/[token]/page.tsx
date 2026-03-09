@@ -131,7 +131,7 @@ export default function InvitePage({ params }: { params: Params }) {
   const [loading, setLoading] = useState(true);
   const [invalid, setInvalid] = useState(false);
   const [newlyUnlocked, setNewlyUnlocked] = useState<string | null>(null);
-  const prevVisitsRef = useRef<string[]>([]);
+  const prevVisitsRef = useRef<string[] | null>(null);
 
   async function fetchVisits() {
     const r = await fetch(`/api/degustation/visit?token=${token}`);
@@ -139,9 +139,11 @@ export default function InvitePage({ params }: { params: Params }) {
     const data = await r.json();
     const newVisits: string[] = data.visits ?? [];
 
-    // Detect newly unlocked stand
-    const added = newVisits.find((id) => !prevVisitsRef.current.includes(id));
-    if (added) setNewlyUnlocked(added);
+    // Detect newly unlocked stand — skip on initial load
+    if (prevVisitsRef.current !== null) {
+      const added = newVisits.find((id) => !prevVisitsRef.current!.includes(id));
+      if (added) setNewlyUnlocked(added);
+    }
     prevVisitsRef.current = newVisits;
 
     setVisits(newVisits);
