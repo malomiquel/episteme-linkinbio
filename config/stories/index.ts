@@ -29,6 +29,9 @@ export { quoteConfig } from "./quote";
 export { thisorthatConfig } from "./thisorthat";
 export { newpostConfig } from "./newpost";
 export { publicationConfig } from "./publication";
+export { urgenceConfig } from "./urgence";
+export { diffusionConfig } from "./diffusion";
+export { matchAnnonceConfig } from "./match-annonce";
 
 import { annonceConfig } from "./annonce";
 import { teaserConfig } from "./teaser";
@@ -40,6 +43,9 @@ import { quoteConfig } from "./quote";
 import { thisorthatConfig } from "./thisorthat";
 import { newpostConfig } from "./newpost";
 import { publicationConfig } from "./publication";
+import { urgenceConfig } from "./urgence";
+import { diffusionConfig } from "./diffusion";
+import { matchAnnonceConfig } from "./match-annonce";
 
 export const storyConfigs: Record<string, StoryConfig> = {
   annonce: annonceConfig,
@@ -52,6 +58,9 @@ export const storyConfigs: Record<string, StoryConfig> = {
   thisorthat: thisorthatConfig,
   newpost: newpostConfig,
   publication: publicationConfig,
+  urgence: urgenceConfig,
+  diffusion: diffusionConfig,
+  "match-annonce": matchAnnonceConfig,
 };
 
 export const storyTypes = Object.keys(storyConfigs);

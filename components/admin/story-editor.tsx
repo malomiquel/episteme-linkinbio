@@ -4,7 +4,6 @@ import { useRef, useState, type ReactNode, type RefObject } from "react";
 import { toPng } from "html-to-image";
 import type { StoryConfig, StoryField } from "@/config/stories";
 
-// Extract dominant color from image
 function extractColorFromImage(file: File): Promise<string> {
   return new Promise((resolve) => {
     const reader = new FileReader();
@@ -22,7 +21,6 @@ function extractColorFromImage(file: File): Promise<string> {
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
 
-        // Sample colors from center area
         const samples = 100;
         const colors: { r: number; g: number; b: number }[] = [];
         const startX = Math.floor(img.width * 0.25);
@@ -37,16 +35,14 @@ function extractColorFromImage(file: File): Promise<string> {
           colors.push({ r: pixel[0], g: pixel[1], b: pixel[2] });
         }
 
-        // Calculate average color
         const avg = colors.reduce(
           (acc, c) => ({ r: acc.r + c.r, g: acc.g + c.g, b: acc.b + c.b }),
-          { r: 0, g: 0, b: 0 }
+          { r: 0, g: 0, b: 0 },
         );
         avg.r = Math.floor(avg.r / samples);
         avg.g = Math.floor(avg.g / samples);
         avg.b = Math.floor(avg.b / samples);
 
-        // Determine which variant matches best
         const variant = getVariantFromColor(avg.r, avg.g, avg.b);
         resolve(variant);
       };
@@ -57,12 +53,12 @@ function extractColorFromImage(file: File): Promise<string> {
 }
 
 function getVariantFromColor(r: number, g: number, b: number): string {
-  // Calculate hue, saturation, lightness
+
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
   const l = (max + min) / 2 / 255;
 
-  if (max === min) return "nuit"; // grayscale
+  if (max === min) return "nuit"; 
 
   const d = max - min;
   const s = l > 0.5 ? d / (510 - max - min) : d / (max + min);
@@ -72,31 +68,32 @@ function getVariantFromColor(r: number, g: number, b: number): string {
   else if (max === g) h = ((b - r) / d + 2) / 6;
   else h = ((r - g) / d + 4) / 6;
 
-  // Map hue to variant
   if (s < 0.2) return l > 0.5 ? "or" : "nuit";
 
   const hue = h * 360;
-  if (hue < 30) return "ambre"; // red-orange
-  if (hue < 60) return "ambre"; // orange-yellow
-  if (hue < 90) return "olive"; // yellow-green
-  if (hue < 150) return "emeraude"; // green
-  if (hue < 210) return "nuit"; // cyan-blue
-  if (hue < 270) return "saphir"; // blue
-  if (hue < 300) return "lavande"; // blue-purple
-  if (hue < 330) return "pourpre"; // purple-magenta
-  return "rose"; // magenta-red
+  if (hue < 30) return "ambre"; 
+  if (hue < 60) return "ambre"; 
+  if (hue < 90) return "olive"; 
+  if (hue < 150) return "emeraude"; 
+  if (hue < 210) return "nuit"; 
+  if (hue < 270) return "saphir"; 
+  if (hue < 300) return "lavande"; 
+  if (hue < 330) return "pourpre"; 
+  return "rose"; 
 }
 
 interface StoryEditorProps {
   config: StoryConfig;
-  children: (state: Record<string, string>, ref: RefObject<HTMLDivElement | null>) => ReactNode;
+  children: (
+    state: Record<string, string>,
+    ref: RefObject<HTMLDivElement | null>,
+  ) => ReactNode;
 }
 
 export function StoryEditor({ config, children }: StoryEditorProps) {
   const storyRef = useRef<HTMLDivElement>(null);
   const [generating, setGenerating] = useState(false);
 
-  // Initialize state from config fields
   const [state, setState] = useState<Record<string, string>>(() => {
     const initial: Record<string, string> = {};
     for (const field of config.fields) {
@@ -118,8 +115,9 @@ export function StoryEditor({ config, children }: StoryEditorProps) {
     if (!storyRef.current || generating) return;
     setGenerating(true);
 
-    // Hide elements marked for exclusion from export
-    const excludedElements = storyRef.current.querySelectorAll('[data-exclude-from-export="true"]');
+    const excludedElements = storyRef.current.querySelectorAll(
+      '[data-exclude-from-export="true"]',
+    );
     const originalDisplays: string[] = [];
     excludedElements.forEach((el, i) => {
       originalDisplays[i] = (el as HTMLElement).style.display;
@@ -146,7 +144,7 @@ export function StoryEditor({ config, children }: StoryEditorProps) {
         } catch {}
       }
     } finally {
-      // Restore visibility of excluded elements
+
       excludedElements.forEach((el, i) => {
         (el as HTMLElement).style.display = originalDisplays[i];
       });
@@ -154,10 +152,8 @@ export function StoryEditor({ config, children }: StoryEditorProps) {
     }
   }
 
-  // Get dynamic hint based on state (for newpost format-dependent hint)
   const hint = config.hint;
 
-  // Group fields by rows for half-width layout
   const fieldRows = groupFieldRows(config.fields);
 
   return (
@@ -200,7 +196,8 @@ export function StoryEditor({ config, children }: StoryEditorProps) {
         </button>
 
         <p className="text-cream/20 text-xs text-center">
-          Image {config.dimensions.width}×{config.dimensions.height} — prête pour Instagram Stories
+          Image {config.dimensions.width}×{config.dimensions.height} — prête
+          pour Instagram Stories
         </p>
       </div>
 
@@ -213,12 +210,15 @@ export function StoryEditor({ config, children }: StoryEditorProps) {
   );
 }
 
-// Group consecutive half-width fields into rows
 function groupFieldRows(fields: StoryField[]): (StoryField | StoryField[])[] {
   const rows: (StoryField | StoryField[])[] = [];
   let i = 0;
   while (i < fields.length) {
-    if (fields[i].width === "half" && i + 1 < fields.length && fields[i + 1].width === "half") {
+    if (
+      fields[i].width === "half" &&
+      i + 1 < fields.length &&
+      fields[i + 1].width === "half"
+    ) {
       rows.push([fields[i], fields[i + 1]]);
       i += 2;
     } else {
@@ -382,7 +382,9 @@ function FieldInput({
                 <div
                   className={`w-6 h-6 rounded-full ${v.preview ?? ""} border border-white/10`}
                 />
-                <span className="text-[9px] text-cream/50 leading-none">{v.label}</span>
+                <span className="text-[9px] text-cream/50 leading-none">
+                  {v.label}
+                </span>
               </button>
             ))}
           </div>
@@ -403,14 +405,12 @@ function FieldInput({
                 const file = e.target.files?.[0];
                 if (!file) return;
 
-                // Convert to data URL
                 const reader = new FileReader();
                 reader.onload = () => {
                   onChange(field.name, reader.result as string);
                 };
                 reader.readAsDataURL(file);
 
-                // Extract color and update variant
                 if (onImageUpload) {
                   onImageUpload(file);
                 }
@@ -424,8 +424,14 @@ function FieldInput({
             >
               {value ? (
                 <div className="flex items-center gap-3">
-                  <img src={value} alt="Preview" className="w-12 h-12 object-cover rounded-lg" />
-                  <span className="text-cream/70">Image chargée • Cliquer pour changer</span>
+                  <img
+                    src={value}
+                    alt="Preview"
+                    className="w-12 h-12 object-cover rounded-lg"
+                  />
+                  <span className="text-cream/70">
+                    Image chargée • Cliquer pour changer
+                  </span>
                 </div>
               ) : (
                 <div className="flex items-center justify-center gap-2 py-2">
@@ -436,7 +442,9 @@ function FieldInput({
             </label>
           </div>
           {field.hint && (
-            <p className="text-cream/25 text-[10px] mt-1.5 leading-relaxed">{field.hint}</p>
+            <p className="text-cream/25 text-[10px] mt-1.5 leading-relaxed">
+              {field.hint}
+            </p>
           )}
         </div>
       );

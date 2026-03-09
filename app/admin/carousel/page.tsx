@@ -8,16 +8,16 @@ type SlideType = "cover" | "content" | "cta";
 interface Slide {
   id: number;
   type: SlideType;
-  // cover
+
   badge?: string;
   title?: string;
   subtitle?: string;
   emoji?: string;
-  // content
+
   number?: string;
   heading?: string;
   body?: string;
-  // cta
+
   ctaLine1?: string;
   ctaLine2?: string;
   ctaEmoji?: string;
@@ -154,7 +154,7 @@ export default function CarouselPage() {
           Crée des slides pour un post carrousel éducatif ou promotionnel.
         </p>
 
-        {/* Slide tabs */}
+
         <div className="flex gap-1.5 flex-wrap">
           {slides.map((s, i) => (
             <button
@@ -175,7 +175,7 @@ export default function CarouselPage() {
           ))}
         </div>
 
-        {/* Add slide */}
+
         <div className="flex gap-2">
           <button
             onClick={() => addSlide("content")}
@@ -193,7 +193,7 @@ export default function CarouselPage() {
           )}
         </div>
 
-        {/* Edit active slide */}
+
         {active && (
           <div className="flex flex-col gap-4 bg-dark-card/50 border border-cream/5 rounded-2xl p-4">
             {active.type === "cover" && (
@@ -312,7 +312,7 @@ export default function CarouselPage() {
         </p>
       </div>
 
-      {/* Preview */}
+
       <div className="overflow-hidden shrink-0 w-[378px] h-[473px] sm:w-[486px] sm:h-[608px] lg:w-[454px] lg:h-[567px]">
         <div className="origin-top-left scale-[0.35] sm:scale-[0.45] lg:scale-[0.42]">
           {active && (
@@ -357,8 +357,6 @@ export default function CarouselPage() {
   );
 }
 
-/* ── Field helper ─────────────────────────────────────── */
-
 function Field({
   label,
   value,
@@ -384,8 +382,6 @@ function Field({
     </div>
   );
 }
-
-/* ── Slide components ─────────────────────────────────── */
 
 const BG = `
   radial-gradient(ellipse at 50% 30%, rgba(80,35,48,0.5) 0%, transparent 60%),
@@ -413,11 +409,11 @@ const CoverSlide = forwardRef<
         }}
       />
 
-      {/* Corner lines */}
+
       {corners("rgba(201,168,76,0.2)")}
 
       <div className="relative z-10 flex flex-col items-center justify-center w-full h-full text-center px-16">
-        {/* Logo */}
+
         <div className="w-[100px] h-[100px] rounded-full border-[2px] border-[#C9A84C]/40 overflow-hidden mb-8">
           <img
             src="/logo.svg"
@@ -426,15 +422,15 @@ const CoverSlide = forwardRef<
           />
         </div>
 
-        {/* Badge */}
+
         <span className="font-(family-name:--font-inter) text-[20px] uppercase tracking-[5px] font-semibold px-8 py-3 rounded-full border-[1.5px] border-[#C9A84C]/30 text-[#C9A84C]/70 mb-10">
           {badge}
         </span>
 
-        {/* Emoji */}
+
         <div className="text-[100px] leading-none mb-6">{emoji}</div>
 
-        {/* Title */}
+
         <h1 className="font-(family-name:--font-playfair) text-[64px] font-bold leading-[1.15]">
           {titleLines.map((line, i) => (
             <span
@@ -447,12 +443,12 @@ const CoverSlide = forwardRef<
           ))}
         </h1>
 
-        {/* Subtitle */}
+
         <p className="font-(family-name:--font-inter) text-[26px] text-[#C9A84C]/50 tracking-wide mt-8">
           {subtitle}
         </p>
 
-        {/* Slide counter */}
+
         <div className="flex gap-2 mt-10">
           {Array.from({ length: slideCount }).map((_, i) => (
             <div
@@ -496,7 +492,7 @@ const ContentSlide = forwardRef<
       {corners("rgba(201,168,76,0.2)")}
 
       <div className="relative z-10 flex flex-col items-center justify-center w-full h-full text-center px-16">
-        {/* Number */}
+
         <p
           className="font-(family-name:--font-playfair) font-bold leading-none"
           style={{ fontSize: 180, color: "rgba(201,168,76,0.1)" }}
@@ -504,24 +500,24 @@ const ContentSlide = forwardRef<
           {number}
         </p>
 
-        {/* Heading */}
+
         <h2 className="font-(family-name:--font-playfair) text-[58px] font-bold text-[#F5F0E8] leading-tight -mt-8">
           {heading}
         </h2>
 
-        {/* Separator */}
+
         <div className="flex items-center gap-4 my-10">
           <div className="w-[80px] h-px bg-[#C9A84C]/25" />
           <div className="w-3 h-3 rotate-45 border-[1.5px] border-[#C9A84C]/35" />
           <div className="w-[80px] h-px bg-[#C9A84C]/25" />
         </div>
 
-        {/* Body */}
+
         <p className="font-(family-name:--font-inter) text-[34px] text-[#F5F0E8]/70 leading-relaxed max-w-[800px]">
           {body}
         </p>
 
-        {/* Handle */}
+
         <p className="font-(family-name:--font-inter) text-[20px] text-[#C9A84C]/30 tracking-wider mt-16">
           @asso_episteme
         </p>
@@ -552,7 +548,7 @@ const CtaSlide = forwardRef<
       {corners("rgba(201,168,76,0.2)")}
 
       <div className="relative z-10 flex flex-col items-center justify-center w-full h-full text-center px-16">
-        {/* Logo */}
+
         <div className="w-[140px] h-[140px] rounded-full border-[2.5px] border-[#C9A84C]/40 overflow-hidden mb-12">
           <img
             src="/logo.svg"
@@ -561,20 +557,20 @@ const CtaSlide = forwardRef<
           />
         </div>
 
-        {/* Emoji */}
+
         <div className="text-[90px] leading-none mb-8">{emoji}</div>
 
-        {/* Line 1 */}
+
         <p className="font-(family-name:--font-playfair) italic text-[46px] text-[#F5F0E8]/60 mb-6">
           {line1}
         </p>
 
-        {/* Line 2 */}
+
         <p className="font-(family-name:--font-playfair) text-[54px] font-bold text-[#F5F0E8]">
           {line2}
         </p>
 
-        {/* Handle */}
+
         <div className="flex items-center gap-4 mt-14">
           <div className="w-[60px] h-px bg-[#C9A84C]/25" />
           <p className="font-(family-name:--font-inter) text-[22px] text-[#C9A84C]/50 tracking-wider">
@@ -586,8 +582,6 @@ const CtaSlide = forwardRef<
     </div>
   );
 });
-
-/* ── Corner decoration ────────────────────────────────── */
 
 function corners(color: string) {
   const size = 50;

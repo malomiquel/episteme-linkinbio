@@ -30,6 +30,9 @@ const storyTemplates = [
   { title: "This or That", href: "/admin/story/thisorthat", emoji: "⚔️" },
   { title: "Nouveau post", href: "/admin/story/newpost", emoji: "🖼️" },
   { title: "Publication", href: "/admin/story/publication", emoji: "📰" },
+  { title: "Urgence / FOMO", href: "/admin/story/urgence", emoji: "🔥" },
+  { title: "Annonce match", href: "/admin/story/match-annonce", emoji: "🏉" },
+  { title: "Diffusion match", href: "/admin/story/diffusion", emoji: "📺" },
 ];
 
 export default function AdminHub() {
@@ -64,7 +67,7 @@ export default function AdminHub() {
             </p>
           </div>
 
-          {/* Outils */}
+
           <p className="text-xs text-cream/25 uppercase tracking-widest font-semibold mb-3 px-1">
             Outils
           </p>
@@ -91,7 +94,7 @@ export default function AdminHub() {
             ))}
           </div>
 
-          {/* Stories section — compact grid */}
+
           <p className="text-xs text-cream/25 uppercase tracking-widest font-semibold mb-3 px-1 mt-8">
             Templates stories
           </p>

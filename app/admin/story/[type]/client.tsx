@@ -13,9 +13,15 @@ import QuoteContent from "./content/quote";
 import ThisOrThatContent from "./content/thisorthat";
 import NewPostContent from "./content/newpost";
 import PublicationContent from "./content/publication";
+import UrgenceContent from "./content/urgence";
+import DiffusionContent from "./content/diffusion";
+import MatchAnnonceContent from "./content/match-annonce";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const contentMap: Record<string, React.ComponentType<any>> = {
+type StoryComponent = React.ForwardRefExoticComponent<
+  object & React.RefAttributes<HTMLDivElement>
+>;
+
+const contentMap = {
   annonce: AnnonceContent,
   teaser: TeaserContent,
   question: QuestionContent,
@@ -26,7 +32,10 @@ const contentMap: Record<string, React.ComponentType<any>> = {
   thisorthat: ThisOrThatContent,
   newpost: NewPostContent,
   publication: PublicationContent,
-};
+  urgence: UrgenceContent,
+  diffusion: DiffusionContent,
+  "match-annonce": MatchAnnonceContent,
+} as Record<string, StoryComponent>;
 
 export default function StoryPageClient({ type }: { type: string }) {
   const config = storyConfigs[type];

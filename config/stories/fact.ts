@@ -8,5 +8,6 @@ export const factConfig: StoryConfig = {
   fields: [
     { name: "title", label: "Titre", type: "text", default: "Le saviez-vous ?", width: "full" },
     { name: "fact", label: "Fait / anecdote", type: "textarea", default: "Il faut environ 600 raisins pour produire une seule bouteille de vin.", rows: 4, width: "full" },
+    { name: "source", label: "Source (optionnel)", type: "text", default: "", width: "full" },
   ],
 };

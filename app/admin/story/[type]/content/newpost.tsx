@@ -236,8 +236,7 @@ const NewPostContent = forwardRef<HTMLDivElement, Record<string, string>>(
   function NewPostContent({ format, variant, caption, postImage }, ref) {
     const isPost = format === "post";
     const t = THEMES[(variant as Variant) || "or"];
-    // Post: 1080x1350 (ratio 4:5) → 680x850
-    // Reel: 1080x1920 (ratio 9:16) → 480x854
+
     const imageWidth = isPost ? 680 : 480;
     const imageHeight = isPost ? 850 : 854;
 
@@ -247,14 +246,14 @@ const NewPostContent = forwardRef<HTMLDivElement, Record<string, string>>(
         className="relative flex flex-col items-center overflow-hidden"
         style={{ width: 1080, height: 1920, background: t.bg }}
       >
-        {/* Background glows */}
+
         <div
           className="absolute inset-0"
           style={{ background: `${t.glow1}, ${t.glow2}, ${t.glow3}` }}
         />
         <div className="absolute inset-0" style={{ background: t.bgOverlay }} />
 
-        {/* Decorative corner lines */}
+
         <div
           className="absolute top-15 left-15 w-30 h-30"
           style={{
@@ -285,7 +284,7 @@ const NewPostContent = forwardRef<HTMLDivElement, Record<string, string>>(
         />
 
         <div className="relative z-10 flex flex-col items-center w-full h-full px-14">
-          {/* Header */}
+
           <div className="flex items-center gap-5 pt-30">
             <div
               className="size-30 rounded-full overflow-hidden"
@@ -318,7 +317,7 @@ const NewPostContent = forwardRef<HTMLDivElement, Record<string, string>>(
             </div>
           </div>
 
-          {/* Badge */}
+
           <div className="mt-24">
             <span
               className="font-(family-name:--font-inter) text-2xl uppercase tracking-[6px] font-semibold px-10 py-3.5 rounded-full"
@@ -331,7 +330,7 @@ const NewPostContent = forwardRef<HTMLDivElement, Record<string, string>>(
             </span>
           </div>
 
-          {/* Caption */}
+
           <p
             className="font-(family-name:--font-playfair) text-6xl font-bold leading-tight mt-12 text-center px-8"
             style={{ color: t.text }}
@@ -339,7 +338,7 @@ const NewPostContent = forwardRef<HTMLDivElement, Record<string, string>>(
             {caption}
           </p>
 
-          {/* Separator */}
+
           <div className="flex items-center gap-5 mt-12 mb-12">
             <div className="w-30 h-px" style={{ background: t.ornament }} />
             <div
@@ -349,7 +348,7 @@ const NewPostContent = forwardRef<HTMLDivElement, Record<string, string>>(
             <div className="w-30 h-px" style={{ background: t.ornament }} />
           </div>
 
-          {/* Post/Reel Image */}
+
           {postImage ? (
             <div className="flex-1 flex items-center justify-center">
               <div
@@ -373,7 +372,7 @@ const NewPostContent = forwardRef<HTMLDivElement, Record<string, string>>(
             <div className="flex-1" />
           )}
 
-          {/* CTA */}
+
           <p
             className="font-(family-name:--font-inter) text-[28px] font-medium tracking-wide mb-[140px]"
             style={{ color: t.textSoft }}
@@ -382,7 +381,7 @@ const NewPostContent = forwardRef<HTMLDivElement, Record<string, string>>(
           </p>
         </div>
 
-        {/* Bottom ornament */}
+
         <div className="absolute bottom-[100px] flex items-center gap-3">
           <div className="w-12 h-px" style={{ background: t.ornament }} />
           <div

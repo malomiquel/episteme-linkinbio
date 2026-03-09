@@ -86,7 +86,7 @@ export default function HighlightCoversPage() {
       for (const preset of PRESETS) {
         setEmoji(preset.emoji);
         setLabel(preset.label);
-        // wait for React to re-render
+
         await new Promise((r) => setTimeout(r, 150));
         if (!coverRef.current) continue;
         const dataUrl = await toPng(coverRef.current, {
@@ -121,7 +121,7 @@ export default function HighlightCoversPage() {
           Icônes rondes pour les stories à la une sur votre profil Instagram.
         </p>
 
-        {/* Presets */}
+
         <div>
           <label className="text-xs text-cream/40 uppercase tracking-wider mb-2 block">
             Préréglages
@@ -149,7 +149,7 @@ export default function HighlightCoversPage() {
           </div>
         </div>
 
-        {/* Custom */}
+
         <div className="flex gap-3">
           <div className="w-20">
             <label className="text-xs text-cream/40 uppercase tracking-wider mb-1.5 block">
@@ -175,7 +175,7 @@ export default function HighlightCoversPage() {
           </div>
         </div>
 
-        {/* Style */}
+
         <div>
           <label className="text-xs text-cream/40 uppercase tracking-wider mb-2 block">
             Style
@@ -218,9 +218,9 @@ export default function HighlightCoversPage() {
         </p>
       </div>
 
-      {/* Preview */}
+
       <div className="flex flex-col items-center gap-6 lg:sticky lg:top-12">
-        {/* Actual render (hidden-ish, shown scaled) */}
+
         <div className="overflow-hidden shrink-0 h-[378px] w-[378px] sm:h-[432px] sm:w-[432px] lg:h-[432px] lg:w-[432px]">
           <div className="origin-top-left scale-[0.35] sm:scale-[0.4] lg:scale-[0.4]">
             <HighlightCover
@@ -232,7 +232,7 @@ export default function HighlightCoversPage() {
           </div>
         </div>
 
-        {/* Circle preview — how it looks on Instagram */}
+
         <div>
           <p className="text-[10px] text-cream/25 uppercase tracking-widest text-center mb-3">
             Aperçu sur le profil
@@ -274,7 +274,7 @@ const HighlightCover = forwardRef<HTMLDivElement, CoverProps>(
           background: style.bg,
         }}
       >
-        {/* Vignette */}
+
         <div
           className="absolute inset-0"
           style={{
@@ -283,7 +283,7 @@ const HighlightCover = forwardRef<HTMLDivElement, CoverProps>(
           }}
         />
 
-        {/* Subtle ring */}
+
         <div
           className="absolute rounded-full"
           style={{
@@ -296,7 +296,7 @@ const HighlightCover = forwardRef<HTMLDivElement, CoverProps>(
           }}
         />
 
-        {/* Inner glow circle */}
+
         <div
           className="absolute rounded-full"
           style={{
@@ -310,7 +310,7 @@ const HighlightCover = forwardRef<HTMLDivElement, CoverProps>(
           }}
         />
 
-        {/* Content */}
+
         <div className="relative z-10 flex flex-col items-center gap-6">
           <span style={{ fontSize: 220, lineHeight: 1 }}>{emoji}</span>
           <p
@@ -321,7 +321,7 @@ const HighlightCover = forwardRef<HTMLDivElement, CoverProps>(
           </p>
         </div>
 
-        {/* Corner ornaments */}
+
         <div
           className="absolute"
           style={{

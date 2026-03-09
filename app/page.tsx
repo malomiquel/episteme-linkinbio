@@ -35,7 +35,7 @@ export default function Home() {
           </p>
         </section>
 
-        <FeaturedQuiz />
+        {/*<FeaturedQuiz />*/}
 
         <section
           className="w-full bg-linear-to-br from-wine-dark/70 to-wine/50 border border-cream/8 rounded-2xl mb-6 text-center animate-fade-in-up backdrop-blur-sm overflow-hidden relative"

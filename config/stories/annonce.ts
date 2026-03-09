@@ -1,6 +1,6 @@
 import type { StoryConfig } from "./index";
 
-const EMOJIS = ["🍷", "🎵", "🎨", "🧀", "🥂", "🔥", "⚡", "🎭", "🎶", "🍇"];
+const EMOJIS = ["🍷", "🎵", "🎨", "🧀", "🥂", "🔥", "⚡", "🎭", "🎶", "🍇", "🎟️"];
 
 export const annonceConfig: StoryConfig = {
   type: "annonce",

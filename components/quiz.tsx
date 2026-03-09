@@ -128,7 +128,6 @@ export function Quiz({ config = wineQuizConfig }: QuizProps) {
         type: "image/png",
       });
 
-      // Try native share with image
       if (navigator.share && navigator.canShare?.({ files: [file] })) {
         track("quiz_shared", {
           method: "native",
@@ -144,7 +143,6 @@ export function Quiz({ config = wineQuizConfig }: QuizProps) {
         return;
       }
 
-      // Native share without image (Android fallback)
       if (navigator.share) {
         track("quiz_shared", {
           method: "native_no_image",
@@ -159,7 +157,6 @@ export function Quiz({ config = wineQuizConfig }: QuizProps) {
         return;
       }
 
-      // Desktop fallback: download image
       track("quiz_shared", {
         method: "download",
         result: result.name,
@@ -172,7 +169,6 @@ export function Quiz({ config = wineQuizConfig }: QuizProps) {
     } catch (err) {
       if ((err as Error)?.name === "AbortError") return;
 
-      // Image generation failed — try share without image
       if (navigator.share) {
         try {
           track("quiz_shared", {
@@ -191,7 +187,6 @@ export function Quiz({ config = wineQuizConfig }: QuizProps) {
         }
       }
 
-      // Last resort: try download again
       try {
         const dataUrl = await toPng(shareRef.current!, { pixelRatio: 2 });
         const link = document.createElement("a");

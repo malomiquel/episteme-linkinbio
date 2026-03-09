@@ -1,7 +1,5 @@
 import { forwardRef } from "react";
 
-/* ─── Shared pieces ─── */
-
 function StoryBackground() {
   return (
     <>
@@ -78,8 +76,6 @@ function Separator() {
   );
 }
 
-/* ─── Main content ─── */
-
 const QuestionContent = forwardRef<HTMLDivElement, Record<string, string>>(
   function QuestionContent({ mode, askTitle }, ref) {
     if (mode === "answer") {
@@ -92,7 +88,7 @@ const QuestionContent = forwardRef<HTMLDivElement, Record<string, string>>(
           <StoryBackground />
 
           <div className="relative z-10 flex flex-col items-center w-full h-full px-14">
-            {/* Logo compact */}
+
             <div className="flex items-center gap-5 pt-[110px]">
               <div className="w-[80px] h-[80px] rounded-full border-[2px] border-[#C9A84C]/50 overflow-hidden shadow-[0_0_40px_rgba(201,168,76,0.1)]">
                 <img
@@ -111,7 +107,7 @@ const QuestionContent = forwardRef<HTMLDivElement, Record<string, string>>(
               </div>
             </div>
 
-            {/* Sticker placeholder for question — top half */}
+
             <div className="mt-14 w-full px-2">
               <StickerPlaceholder height={380} />
             </div>
@@ -120,7 +116,7 @@ const QuestionContent = forwardRef<HTMLDivElement, Record<string, string>>(
               <Separator />
             </div>
 
-            {/* Notre réponse label */}
+
             <div className="mt-12">
               <span className="font-(family-name:--font-inter) text-[20px] uppercase tracking-[6px] font-semibold px-10 py-3.5 rounded-full border-[1.5px] border-[#C9A84C]/30 text-[#C9A84C]/70">
                 Notre réponse
@@ -133,7 +129,6 @@ const QuestionContent = forwardRef<HTMLDivElement, Record<string, string>>(
       );
     }
 
-    // Ask mode
     return (
       <div
         ref={ref}
@@ -143,7 +138,7 @@ const QuestionContent = forwardRef<HTMLDivElement, Record<string, string>>(
         <StoryBackground />
 
         <div className="relative z-10 flex flex-col items-center w-full h-full px-14">
-          {/* Top area — logo + branding */}
+
           <div className="flex flex-col items-center pt-[130px]">
             <div className="w-[130px] h-[130px] rounded-full border-[2.5px] border-[#C9A84C]/50 overflow-hidden shadow-[0_0_60px_rgba(201,168,76,0.12)]">
               <img
@@ -157,14 +152,14 @@ const QuestionContent = forwardRef<HTMLDivElement, Record<string, string>>(
             </p>
           </div>
 
-          {/* Badge */}
+
           <div className="mt-16">
             <span className="font-(family-name:--font-inter) text-[20px] uppercase tracking-[6px] font-semibold px-10 py-3.5 rounded-full border-[1.5px] border-[#C9A84C]/30 text-[#C9A84C]/70">
               Vos questions
             </span>
           </div>
 
-          {/* Title */}
+
           <h1 className="font-(family-name:--font-playfair) text-[72px] font-bold text-[#F5F0E8] leading-[1.15] mt-14 text-center px-4">
             {askTitle}
           </h1>
@@ -173,12 +168,12 @@ const QuestionContent = forwardRef<HTMLDivElement, Record<string, string>>(
             <Separator />
           </div>
 
-          {/* Sticker placeholder — big and centered */}
+
           <div className="mt-14 w-full px-4 flex-1 max-h-[520px]">
             <StickerPlaceholder height={480} />
           </div>
 
-          {/* CTA */}
+
           <p className="font-(family-name:--font-inter) text-[24px] text-[#C9A84C]/25 tracking-wider mb-[160px] mt-auto">
             ↑ Appuyez ici pour répondre
           </p>

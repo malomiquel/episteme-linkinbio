@@ -8,8 +8,8 @@ export interface QuizEntry {
   path: string;
   label: string; // Badge affiché ("Quiz", "Nouveau", "Blind test"…)
   emoji: string;
-  title: string; // Titre affiché sur la home
-  description: string; // Sous-titre affiché sur la home
+  title: string; 
+  description: string; 
 }
 
 export const quizzes: Record<string, QuizEntry> = {
