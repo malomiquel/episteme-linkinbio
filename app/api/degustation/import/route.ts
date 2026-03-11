@@ -1,21 +1,6 @@
 import { NextResponse } from "next/server";
 import { readData, writeData, type Guest } from "../guests/route";
 
-// CSV column names from HelloAsso export
-const COL = {
-  statut: "Statut de la commande",
-  nomParticipant: "Nom participant",
-  prenomParticipant: "Prénom participant",
-  emailPayeur: "Email payeur",
-  numeroBillet: "Numéro de billet",
-  tarif: "Tarif",
-} as const;
-
-function splitCSVRow(row: string): string[] {
-  // Split by ; and strip surrounding quotes + whitespace from each field
-  return row.split(";").map((col) => col.replace(/^"(.*)"$/, "$1").trim());
-}
-
 interface ParsedTicket {
   statut: string;
   nomParticipant: string;
@@ -25,19 +10,31 @@ interface ParsedTicket {
   tarif: string;
 }
 
-function parseHelloAssoCSV(csv: string): ParsedTicket[] {
-  const lines = csv.trim().split(/\r?\n/);
-  if (lines.length < 2) return [];
+// ── HelloAsso ──────────────────────────────────────────────────────────────────
 
-  const headers = splitCSVRow(lines[0]);
+const HA_COL = {
+  statut: "Statut de la commande",
+  nomParticipant: "Nom participant",
+  prenomParticipant: "Prénom participant",
+  emailPayeur: "Email payeur",
+  numeroBillet: "Numéro de billet",
+  tarif: "Tarif",
+} as const;
+
+function splitHelloAssoRow(row: string): string[] {
+  return row.split(";").map((col) => col.replace(/^"(.*)"$/, "$1").trim());
+}
+
+function parseHelloAssoCSV(lines: string[]): ParsedTicket[] {
+  const headers = splitHelloAssoRow(lines[0]);
 
   const idx = {
-    statut: headers.indexOf(COL.statut),
-    nomParticipant: headers.indexOf(COL.nomParticipant),
-    prenomParticipant: headers.indexOf(COL.prenomParticipant),
-    emailPayeur: headers.indexOf(COL.emailPayeur),
-    numeroBillet: headers.indexOf(COL.numeroBillet),
-    tarif: headers.indexOf(COL.tarif),
+    statut: headers.indexOf(HA_COL.statut),
+    nomParticipant: headers.indexOf(HA_COL.nomParticipant),
+    prenomParticipant: headers.indexOf(HA_COL.prenomParticipant),
+    emailPayeur: headers.indexOf(HA_COL.emailPayeur),
+    numeroBillet: headers.indexOf(HA_COL.numeroBillet),
+    tarif: headers.indexOf(HA_COL.tarif),
   };
 
   const missing = Object.entries(idx)
@@ -45,7 +42,7 @@ function parseHelloAssoCSV(csv: string): ParsedTicket[] {
     .map(([k]) => k);
 
   if (missing.length > 0) {
-    throw new Error(`Colonnes manquantes dans le CSV : ${missing.join(", ")}`);
+    throw new Error(`Colonnes HelloAsso manquantes : ${missing.join(", ")}`);
   }
 
   const tickets: ParsedTicket[] = [];
@@ -54,7 +51,7 @@ function parseHelloAssoCSV(csv: string): ParsedTicket[] {
     const line = lines[i].trim();
     if (!line) continue;
 
-    const cols = splitCSVRow(line);
+    const cols = splitHelloAssoRow(line);
 
     const ticket: ParsedTicket = {
       statut: cols[idx.statut] ?? "",
@@ -65,13 +62,103 @@ function parseHelloAssoCSV(csv: string): ParsedTicket[] {
       tarif: cols[idx.tarif] ?? "",
     };
 
-    // Only keep validated orders with a ticket number
     if (ticket.statut === "Validé" && ticket.numeroBillet) {
       tickets.push(ticket);
     }
   }
 
   return tickets;
+}
+
+// ── Shotgun ────────────────────────────────────────────────────────────────────
+
+const SG_COL = {
+  statut: "STATUT",
+  prenom: "PRENOM",
+  nom: "NOM",
+  email: "EMAIL",
+  codeBarres: "CODE-BARRES",
+  nomTarif: "NOM DU TARIF",
+} as const;
+
+function splitShotgunRow(row: string): string[] {
+  // Comma-separated, fields may be quoted
+  const result: string[] = [];
+  let current = "";
+  let inQuotes = false;
+
+  for (let i = 0; i < row.length; i++) {
+    const ch = row[i];
+    if (ch === '"') {
+      inQuotes = !inQuotes;
+    } else if (ch === "," && !inQuotes) {
+      result.push(current.trim());
+      current = "";
+    } else {
+      current += ch;
+    }
+  }
+  result.push(current.trim());
+  return result;
+}
+
+function parseShotgunCSV(lines: string[]): ParsedTicket[] {
+  const headers = splitShotgunRow(lines[0]);
+
+  const idx = {
+    statut: headers.indexOf(SG_COL.statut),
+    prenom: headers.indexOf(SG_COL.prenom),
+    nom: headers.indexOf(SG_COL.nom),
+    email: headers.indexOf(SG_COL.email),
+    codeBarres: headers.indexOf(SG_COL.codeBarres),
+    nomTarif: headers.indexOf(SG_COL.nomTarif),
+  };
+
+  const missing = Object.entries(idx)
+    .filter(([, v]) => v === -1)
+    .map(([k]) => k);
+
+  if (missing.length > 0) {
+    throw new Error(`Colonnes Shotgun manquantes : ${missing.join(", ")}`);
+  }
+
+  const tickets: ParsedTicket[] = [];
+
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+
+    const cols = splitShotgunRow(line);
+
+    const ticket: ParsedTicket = {
+      statut: cols[idx.statut] ?? "",
+      nomParticipant: cols[idx.nom] ?? "",
+      prenomParticipant: cols[idx.prenom] ?? "",
+      emailPayeur: cols[idx.email] ?? "",
+      numeroBillet: cols[idx.codeBarres] ?? "",
+      tarif: cols[idx.nomTarif] ?? "",
+    };
+
+    if (ticket.statut === "valid" && ticket.numeroBillet) {
+      tickets.push(ticket);
+    }
+  }
+
+  return tickets;
+}
+
+// ── Auto-detect & dispatch ─────────────────────────────────────────────────────
+
+function parseCSV(csv: string): ParsedTicket[] {
+  const lines = csv.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+
+  // Detect format from the first header line
+  const firstLine = lines[0];
+  if (firstLine.includes("CODE-BARRES")) {
+    return parseShotgunCSV(lines);
+  }
+  return parseHelloAssoCSV(lines);
 }
 
 export async function POST(request: Request) {
@@ -84,7 +171,7 @@ export async function POST(request: Request) {
     }
 
     const csvText = await (file as File).text();
-    const tickets = parseHelloAssoCSV(csvText);
+    const tickets = parseCSV(csvText);
 
     if (tickets.length === 0) {
       return NextResponse.json(

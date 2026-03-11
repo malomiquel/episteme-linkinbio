@@ -23,7 +23,9 @@ function DegustationAdmin() {
   const [loading, setLoading] = useState(true);
   const [importing, setImporting] = useState(false);
   const [importResult, setImportResult] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const dragCounterRef = useRef(0);
   const [search, setSearch] = useQueryState("q", { defaultValue: "", shallow: true });
 
   useEffect(() => {
@@ -33,10 +35,41 @@ function DegustationAdmin() {
       .finally(() => setLoading(false));
   }, []);
 
-  async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  useEffect(() => {
+    function onDragEnter(e: DragEvent) {
+      e.preventDefault();
+      dragCounterRef.current++;
+      if (e.dataTransfer?.types.includes("Files")) setIsDragging(true);
+    }
+    function onDragOver(e: DragEvent) {
+      e.preventDefault();
+    }
+    function onDragLeave() {
+      dragCounterRef.current--;
+      if (dragCounterRef.current === 0) setIsDragging(false);
+    }
+    function onDrop(e: DragEvent) {
+      e.preventDefault();
+      dragCounterRef.current = 0;
+      setIsDragging(false);
+      const file = e.dataTransfer?.files?.[0];
+      if (file) importFile(file);
+    }
 
+    window.addEventListener("dragenter", onDragEnter);
+    window.addEventListener("dragover", onDragOver);
+    window.addEventListener("dragleave", onDragLeave);
+    window.addEventListener("drop", onDrop);
+    return () => {
+      window.removeEventListener("dragenter", onDragEnter);
+      window.removeEventListener("dragover", onDragOver);
+      window.removeEventListener("dragleave", onDragLeave);
+      window.removeEventListener("drop", onDrop);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  async function importFile(file: File) {
     setImporting(true);
     setImportResult(null);
 
@@ -67,18 +100,49 @@ function DegustationAdmin() {
     }
   }
 
+  function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) importFile(file);
+  }
+
   function exportCSV() {
     const origin = window.location.origin;
+
+    // Group guests by email — preserve insertion order within each group
+    const byEmail = new Map<string, typeof data.guests>();
+    for (const g of data.guests) {
+      const key = g.email.toLowerCase();
+      if (!byEmail.has(key)) byEmail.set(key, []);
+      byEmail.get(key)!.push(g);
+    }
+
+    const groups = [...byEmail.values()];
+    const maxBadges = Math.max(...groups.map((g) => g.length), 1);
+
+    // Headers: Email, Destinataire, Nom N / URL N per badge slot, Statut envoi
+    const headers = ["Email", "Destinataire"];
+    for (let n = 1; n <= maxBadges; n++) {
+      headers.push(`Nom ${n}`, `URL ${n}`);
+    }
+    headers.push("Statut envoi");
+
     const rows = [
-      ["Numéro", "Prénom Nom", "Email", "Tarif", "Token", "URL Badge"],
-      ...data.guests.map((g, i) => [
-        String(i + 1).padStart(3, "0"),
-        g.name || "(sans nom)",
-        g.email,
-        g.ticketType,
-        g.token,
-        `${origin}/degustation/invite/${g.token}`,
-      ]),
+      headers,
+      ...groups.map((group) => {
+        const row = [
+          group[0].email,
+          group[0].firstName || group[0].name.split(" ")[0] || group[0].name,
+        ];
+        for (let n = 0; n < maxBadges; n++) {
+          const g = group[n];
+          row.push(
+            g ? (g.name || "(sans nom)") : "",
+            g ? `${origin}/degustation/invite/${g.token}` : ""
+          );
+        }
+        row.push(""); // Statut envoi — rempli par l'Apps Script
+        return row;
+      }),
     ];
     const csv = rows.map((r) => r.map((v) => `"${v}"`).join(";")).join("\n");
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
@@ -129,6 +193,17 @@ function DegustationAdmin() {
 
   return (
     <>
+      {isDragging && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+          <div className="absolute inset-0 bg-dark/80 backdrop-blur-sm" />
+          <div className="relative flex flex-col items-center gap-3 border-2 border-dashed border-gold/60 rounded-3xl px-16 py-12 bg-dark-card/60">
+            <span className="text-5xl">📂</span>
+            <p className="text-gold font-semibold text-lg">Déposer le fichier CSV</p>
+            <p className="text-cream/40 text-sm">HelloAsso ou Shotgun</p>
+          </div>
+        </div>
+      )}
+
       <div className="fixed inset-0 bg-dark z-0">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(201,168,76,0.12)_0%,transparent_50%),radial-gradient(ellipse_at_80%_100%,rgba(140,58,68,0.2)_0%,transparent_50%)]" />
       </div>
@@ -166,14 +241,14 @@ function DegustationAdmin() {
             </div>
           </div>
 
-          {/* Import HelloAsso CSV */}
+          {/* Import CSV */}
           <p className="text-xs text-cream/25 uppercase tracking-widest font-semibold mb-3 px-1">
-            Importer les inscrits HelloAsso
+            Importer les inscrits
           </p>
           <div className="bg-dark-card/80 border border-cream/8 rounded-2xl p-4 backdrop-blur-sm mb-2">
             <p className="text-xs text-cream/40 mb-3">
-              Exporte la liste des participants depuis HelloAsso (format CSV) et importe-la ici.
-              Les imports répétés préservent les tokens existants.
+              Importe un CSV HelloAsso ou Shotgun. Glisse le fichier n&apos;importe où sur la page
+              ou clique pour le choisir. Les imports répétés préservent les tokens existants.
             </p>
             <label className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl border border-dashed border-gold/30 text-gold text-sm font-semibold cursor-pointer active:bg-gold/10 transition-colors">
               {importing ? (
