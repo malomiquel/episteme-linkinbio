@@ -1,6 +1,5 @@
 import { Countdown } from "../components/countdown";
 import { LinkCard } from "../components/link-card";
-import { FeaturedQuiz } from "../components/featured-quiz";
 import { siteConfig, nextEvent, links, pastEvents } from "../config/site";
 import { cn } from "@/lib/utils";
 

@@ -1,6 +1,12 @@
 "use client";
 
 import { use, useEffect, useRef, useState } from "react";
+
+declare global {
+  interface Window {
+    umami?: { track: (event: string, data?: Record<string, string | number>) => void };
+  }
+}
 import QRCode from "react-qr-code";
 import { STANDS } from "../../../../config/degustation";
 
@@ -168,6 +174,7 @@ export default function InvitePage({ params }: { params: Params }) {
   const [loading, setLoading] = useState(true);
   const [invalid, setInvalid] = useState(false);
   const [newlyUnlocked, setNewlyUnlocked] = useState<string | null>(null);
+  const hasTrackedRef = useRef(false);
   const prevVisitsRef = useRef<string[] | null>(null);
 
   async function fetchVisits() {
@@ -194,6 +201,13 @@ export default function InvitePage({ params }: { params: Params }) {
     const interval = setInterval(fetchVisits, 4000);
     return () => clearInterval(interval);
   }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Track invite page open once, after guest data is loaded
+  useEffect(() => {
+    if (loading || hasTrackedRef.current) return;
+    hasTrackedRef.current = true;
+    window.umami?.track("invite_opened", { token, name: guestName ?? "(inconnu)" });
+  }, [loading, guestName, token]);
 
   // Clear "newly unlocked" highlight after 3s
   useEffect(() => {
