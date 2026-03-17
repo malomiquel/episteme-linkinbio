@@ -3,7 +3,20 @@ import { LinkCard } from "../components/link-card";
 import { siteConfig, nextEvent, links, pastEvents } from "../config/site";
 import { cn } from "@/lib/utils";
 
+function getEventState(dateStr: string): "upcoming" | "recent" | "past" {
+  const now = new Date();
+  const eventDate = new Date(dateStr);
+  const diffMs = now.getTime() - eventDate.getTime();
+  if (diffMs < 0) return "upcoming";
+  if (diffMs < 7 * 24 * 60 * 60 * 1000) return "recent";
+  return "past";
+}
+
 export default function Home() {
+  const eventState = nextEvent.announced
+    ? getEventState(nextEvent.date)
+    : null;
+
   return (
     <>
       <div className="fixed inset-0 bg-dark z-0">
@@ -40,7 +53,7 @@ export default function Home() {
           className="w-full bg-linear-to-br from-wine-dark/70 to-wine/50 border border-cream/8 rounded-2xl mb-6 text-center animate-fade-in-up backdrop-blur-sm overflow-hidden relative"
           style={{ animationDelay: "200ms" }}
         >
-          {nextEvent.announced ? (
+          {eventState === "upcoming" ? (
             <div className="p-6">
               <p className="text-[11px] uppercase tracking-[3px] text-gold/80 font-semibold mb-1.5">
                 Prochain événement
@@ -82,6 +95,27 @@ export default function Home() {
                   ? "Réserver ma place"
                   : "Billetterie prochainement"}
               </a>
+            </div>
+          ) : eventState === "recent" ? (
+            <div className="p-6">
+              <p className="text-[11px] uppercase tracking-[3px] text-gold/80 font-semibold mb-1.5">
+                Événement terminé
+              </p>
+              <h2 className="font-(family-name:--font-playfair) text-[22px] font-bold mb-1 text-cream">
+                {nextEvent.name}
+              </h2>
+              <p className="text-[13px] text-cream/50">
+                Merci à tous pour cette belle soirée ✨
+              </p>
+            </div>
+          ) : eventState === "past" ? (
+            <div className="p-6 flex flex-col items-center">
+              <p className="font-(family-name:--font-playfair) text-xl font-bold text-cream mb-2">
+                Restez connectés
+              </p>
+              <p className="text-sm text-gold/70">
+                Le prochain événement arrive bientôt
+              </p>
             </div>
           ) : (
             <div className="relative">
